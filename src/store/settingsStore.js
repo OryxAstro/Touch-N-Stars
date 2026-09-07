@@ -42,6 +42,7 @@ export const useSettingsStore = defineStore('settings', {
     devChannelUnlocked: false,
     useDevUpdateChannel: false,
     touchOptimized: true,
+    hapticsEnabled: true,
     livestack: {
       showFilters: true,
     },
@@ -100,6 +101,12 @@ export const useSettingsStore = defineStore('settings', {
     },
     framing: {
       useNinaCache: true,
+    },
+    // Sky chart moon overlay: kept here, not in apiStore, because this store is
+    // persisted as a whole - the toggle has to survive a restart and an instance
+    // switch, while clearAllStates() would wipe it from apiStore.
+    skyChart: {
+      showMoon: false,
     },
     mount: {
       slewRate: 9,

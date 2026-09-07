@@ -140,6 +140,16 @@
       "confirmSetTargetMessage": "Jste si jisti, že chcete tento cíl nastavit jako součást sekvence?",
       "useNinaCache": "Využití mezipaměti NINA pro cílový obraz",
       "setSequnceTarget": "nastavit tento cíl jako součást sekvence",
+      "sequenceTargetPicker": {
+        "title": "Cíl sekvence",
+        "hint": "Vyberte, který cíl načtené sekvence obdrží souřadnice snímkování.",
+        "newTarget": "Nový cíl",
+        "unnamed": "Cíl {index}",
+        "position": "Pozice vložení",
+        "positionEnd": "Na konec",
+        "positionAfter": "Po {name}",
+        "addFailed": "Nový cíl nebyl přidán do sekvence"
+      },
       "search": {
         "title": "Hledat",
         "placeholder": "Zadejte hledaný výraz...",
@@ -169,7 +179,11 @@
         "altitude": "Výška (°)",
         "horizonProfile": "Profil horizontu",
         "twilight": "Soumrak",
-        "astronomicalNight": "Astronomická noc"
+        "astronomicalNight": "Astronomická noc",
+        "moon": "Měsíc",
+        "toggleMoon": "Zobrazit Měsíc",
+        "moonIlluminationFmt": "{pct} % osvětlen",
+        "moonSeparationFmt": "{deg}° od cíle"
       },
       "mosaic": {
         "title": "Režim mozaiky",
@@ -184,7 +198,11 @@
         "panelsSet": "panely nastavené v pořadí",
         "willBeSaved": "panely budou uloženy jednotlivě"
       },
-      "customTarget": "Custom Target"
+      "customTarget": "Custom Target",
+      "solvedRotation": {
+        "short": "vyřešeno",
+        "tooltip": "Rotace kamery z posledního úspěšného plate solve"
+      }
     },
     "tutorial": {
       "previous": "Předchozí",
@@ -526,6 +544,10 @@
         "title": "Optimalizace vstupu",
         "touchOptimized": "Dotykový selektor"
       },
+      "haptics": {
+        "title": "Haptická odezva",
+        "description": "Krátká vibrace při stisknutí tlačítek"
+      },
       "beta": {
         "title": "Beta aktualizační kanál"
       },
@@ -587,6 +609,7 @@
         "astapDatabaseInstallFailed": "ASTAP star database install failed{exitCode}.",
         "astapDatabaseInstallSuccess": "ASTAP star database {databaseId} installed successfully.",
         "astapDatabaseInstalling": "Installing...",
+        "astapDatabaseProgressStalled": "Stahování se 30 sekund neposunulo. Úloha je nadále sledována.",
         "astapDatabaseJobStarted": "started",
         "astapDatabaseJobStartedMessage": "Install job started for {databaseId}.",
         "astapDatabaseJobStatus": "Job {jobId}: {status}",
@@ -1118,7 +1141,8 @@
         "dso": {
           "targetName": "Cílové jméno",
           "positionAngle": "Poziční úhel",
-          "loadFromFavorites": "Načíst z oblíbených"
+          "loadFromFavorites": "Načíst z oblíbených",
+          "loadIntoFraming": "Načíst do Framing Asistentu"
         },
         "warmCamera": {
           "duration": "Délka (min)"
@@ -1908,7 +1932,8 @@
       },
       "indi": {
         "settings": "Nastavení rotátoru"
-      }
+      },
+      "solvedPositionAngle": "Vyřešený úhel na obloze"
     },
     "flat": {
       "please_connect_flatDevice": "Připojte flat zařízení",
@@ -2139,7 +2164,11 @@
       "enter_name": "Zadejte jméno",
       "no_fav": "Žádné oblíbené položky nejsou uloženy",
       "titel": "Oblíbené",
-      "save_to_favorites": "Uložit do oblíbených cílů"
+      "save_to_favorites": "Uložit do oblíbených cílů",
+      "groups": {
+        "favorites": "Oblíbené",
+        "telescopius": "Telescopius"
+      }
     },
     "helpers": {
       "imageModal": {
@@ -2264,7 +2293,7 @@
       "initializing": "Inicializace...",
       "outdated": {
         "title": "Plugin Zastaralý",
-        "message": "Plugin TouchNStars v NINA je zastaralý a musí být aktualizován.",
+        "message": "Plugin TouchNStars v {host} je zastaralý a musí být aktualizován.",
         "required": "Požadovaná Verze",
         "current": "Aktuální Verze"
       }
@@ -2810,7 +2839,59 @@
         "noListsHint": "Vytvořte seznamy cílů na telescopius.com a poté je zde znovu načtěte.",
         "editOnTelescopius": "Upravit seznamy na Telescopius",
         "dataFrom": "Data z",
-        "connectionError": "Připojení k Telescopius selhalo. Počítač NINA potřebuje internetové připojení a v Telescopius musí existovat alespoň jeden seznam cílů."
+        "connectionError": "Připojení k Telescopius selhalo. Počítač NINA potřebuje internetové připojení a v Telescopius musí existovat alespoň jeden seznam cílů.",
+        "myLists": "Moje seznamy cílů",
+        "unnamedList": "Nepojmenovaný seznam",
+        "showObjects": "Zobrazit objekty",
+        "hideObjects": "Skrýt objekty",
+        "ra": "RA",
+        "dec": "DEC",
+        "size": "Velikost",
+        "magnitude": "Mag"
+      },
+      "import": {
+        "title": "Import cílů z CSV",
+        "button": "Importovat CSV",
+        "description": "Importujte seznam cílů exportovaný z telescopius.com. Není k tomu potřeba žádný API klíč.",
+        "landingTitle": "Nemáte API klíč? Importujte CSV",
+        "landingDescription": "Exportujte libovolný pozorovací seznam na telescopius.com jako soubor CSV a naimportujte jej sem. Importované cíle lze použít pro framing, najetí i jako cíl sekvence stejně jako cíle načtené přes API.",
+        "selectFile": "Vybrat soubor CSV",
+        "listName": "Název seznamu",
+        "targetsFound": "Cílů: {count}",
+        "morePreview": "… a dalších {count}",
+        "import": "Importovat",
+        "cancel": "Zrušit",
+        "remove": "Smazat seznam",
+        "removeConfirm": "Smazat importovaný seznam „{name}“?",
+        "importedLists": "Importované seznamy",
+        "formatHelp": {
+          "title": "Podporovaný formát CSV",
+          "description": "Export CSV z telescopius.com je podporován přímo. Sloupce se rozpoznávají podle záhlaví, takže na jejich pořadí nezáleží a sloupce navíc se ignorují.",
+          "columns": "Povinné: Right Ascension (j2000), Declination (j2000) — Volitelné: Catalogue Entry, Familiar Name, Type, Constellation, Magnitude, Size, Notes",
+          "note": "Souřadnice se čtou jako J2000 ve formátu 21h 38' 59\" / 57° 30' 50\". Podporovány jsou soubory oddělené čárkou i středníkem."
+        },
+        "errors": {
+          "empty": "Soubor neobsahuje žádná data.",
+          "tooLarge": "Soubor je příliš velký (max. 2 MB).",
+          "readFailed": "Soubor se nepodařilo přečíst.",
+          "missingColumns": "Chybí povinné sloupce: {columns}",
+          "noValidRows": "V souboru nebyl nalezen žádný cíl s platnými souřadnicemi.",
+          "rowsSkipped": "Přeskočeno {count} řádků, protože jejich souřadnice nešly přečíst.",
+          "rowFailed": "Řádek {line}",
+          "saveFailed": "Importovaný seznam se nepodařilo uložit."
+        }
+      },
+      "edit": {
+        "edit": "Upravit cíl",
+        "name": "Jméno",
+        "ra": "Rektascenze",
+        "dec": "Deklinace",
+        "rotation": "Rotace",
+        "rotationEmpty": "žádná",
+        "save": "Uložit",
+        "invalidCoordinates": "Rektascenzi nebo deklinaci se nepodařilo přečíst.",
+        "invalidRotation": "Rotace musí být číslo.",
+        "saveFailed": "Změnu se nepodařilo uložit."
       }
     },
     "webcam": {
@@ -4439,7 +4520,6 @@
       "goUp": "Up",
       "refresh": "Refresh",
       "imagesOnly": "Images/FITS only",
-      "currentPath": "Current Path",
       "directoriesCount": "Directories: {count}",
       "filesCount": "Files: {count}",
       "newFolderPlaceholder": "New folder name",
@@ -4455,15 +4535,51 @@
       "modified": "Modified",
       "isImage": "Image/FITS",
       "selectEntryHint": "Select a file or directory to see details.",
-      "onHoldTitle": "On Hold",
-      "onHoldMessage": "Rename and file open actions are intentionally on hold for now.",
       "loadError": "Failed to load directory contents.",
       "createError": "Failed to create directory.",
       "deleteError": "Failed to delete entry.",
       "deleteDirectoryTitle": "Delete Directory",
       "deleteDirectoryMessage": "Delete directory \"{name}\" recursively?",
       "deleteFileTitle": "Delete File",
-      "deleteFileMessage": "Delete file \"{name}\"?"
+      "deleteFileMessage": "Delete file \"{name}\"?",
+      "searchPlaceholder": "Hledat v této složce…",
+      "noMatches": "Filtru neodpovídají žádné položky.",
+      "sortBy": "Řadit podle",
+      "sortName": "Název",
+      "sortModified": "Datum změny",
+      "sortSize": "Velikost",
+      "sortAsc": "Vzestupně",
+      "sortDesc": "Sestupně",
+      "selectAll": "Vybrat vše",
+      "clearSelection": "Zrušit výběr",
+      "selectedCount": "Vybráno: {count}",
+      "toggleSelection": "Vybrat {name}",
+      "renameError": "Přejmenování se nezdařilo.",
+      "renameEmptyName": "Zadejte název.",
+      "deleteSelectedTitle": "Smazat výběr",
+      "deleteSelectedMessage": "Smazat {count} položek? Z toho {directories} adresářů se smaže rekurzivně.",
+      "download": {
+        "action": "Uložit do zařízení",
+        "progress": "{current}/{total}",
+        "doneTitle": "Stahování dokončeno",
+        "doneMessage": "Do zařízení uloženo {count} souborů.",
+        "failedTitle": "Stahování se nezdařilo",
+        "failedMessage": "{failed} souborů se nepodařilo uložit ({succeeded} úspěšně). {error}"
+      },
+      "fits": {
+        "debugTitle": "Diagnostika obrazu",
+        "clipStrength": "Oříznutí černé",
+        "stretchStrength": "Faktor stretche",
+        "unlinked": "Nezávislý stretch",
+        "debayer": "Debayer",
+        "pattern": "Vzor Bayer",
+        "none": "žádný",
+        "size": "Velikost",
+        "bitDepth": "Bitová hloubka",
+        "header": "Hlavička (hlavní klíče)",
+        "unsupportedFile": "Tento typ souboru nelze zobrazit v náhledu, místo toho bude uložen do zařízení.",
+        "previewFailed": "Náhled se nepodařilo vykreslit. Soubor uložte pomocí tlačítka ke stažení."
+      }
     },
     "phd2logviewer": {
       "cal": {
@@ -4987,7 +5103,8 @@
       "tonightPicks": "Výběr na dnešek",
       "topForWindow": "Nejlepší cíle pro zvolené časové okno",
       "preview": "Náhled",
-      "framing": "Zarámování"
+      "framing": "Zarámování",
+      "topFmt": "Top {n}"
     },
     "filters": {
       "title": "Filtry",
@@ -5000,7 +5117,9 @@
       "objectType": "Typ objektu",
       "azSector": "Směr oblohy (azimutální sektor)",
       "onlyAboveHorizon": "Pouze >0° výška",
-      "limit": "Omezit"
+      "limit": "Omezit",
+      "countFmt": "{filtered} / {total} cílů · zobrazeno: {shown}",
+      "moonIlluminatedFmt": "{pct}% osvětlen"
     },
     "sort": {
       "title": "Řazení",
@@ -5049,7 +5168,10 @@
       "altitudeVsTime": "Výška vs. čas",
       "sampleMin": "Vzorek (min)",
       "directionAz": "Směr (Az)",
-      "separation": "Separace —"
+      "separation": "Separace —",
+      "separationFmt": "Separace {deg}°",
+      "pointsFmt": "{n} bodů",
+      "visibleHoursFmt": "{h} h viditelné"
     },
     "sectors": {
       "N_NE": "Sever → Severovýchod (315°–45°)",
@@ -5066,7 +5188,9 @@
       "yes": "Ano",
       "no": "Ne",
       "loading": "Načítání…",
-      "all": "Vše"
+      "all": "Vše",
+      "unnamedTarget": "Nepojmenovaný cíl",
+      "reset": "Resetovat"
     },
     "tooltips": {
       "favorite": "Oblíbené",
@@ -5091,6 +5215,13 @@
     "errors": {
       "noSequenceAvailable": "Žádná sekvence není k dispozici, nejprve načtěte sekvenci",
       "sequencerFailed": "Sekvencer selhal"
+    },
+    "score": {
+      "excellent": "🔥 Vynikající",
+      "veryGood": "⭐ Velmi dobré",
+      "good": "👍 Dobré",
+      "difficult": "⚠️ Obtížné",
+      "skip": "❌ Přeskočit"
     }
   },
   "indi": {
@@ -5317,7 +5448,15 @@
       "risesAt": "Východ {time}",
       "setsAt": "Západ {time}",
       "circumpolar": "Cirkumpolární — nikdy nezapadá",
-      "doesNotRise": "Dnes v noci nevychází"
+      "doesNotRise": "Dnes v noci nevychází",
+      "rate": "RYCHLOST (RA/DEC)",
+      "maxExposure": "MAX. EXPOZICE",
+      "maxExposureTitle": "Co je maximální expozice?",
+      "maxExposureTooltip": "Co znamená maximální expozice?",
+      "maxExposureExplanation": "Komety se pohybují vůči hvězdám v pozadí. Quick Track sleduje montáž rychlostí komety, takže během každého snímku se posouvají hvězdy místo komety -- jakmile tento posun překročí zhruba 1 pixel, hvězdy se začnou protahovat, což se po sesazení projeví jako mírně vejčité hvězdy a měkčí detaily. Toto číslo je délka expozice, při které je dosaženo tohoto posunu o 1 pixel, na základě skutečné úhlové rychlosti komety a měřítka vašeho fotoaparátu (velikost pixelu a ohnisková vzdálenost).",
+      "maxExposureCaveat": "Jedná se pouze o limit sledování -- nebere v úvahu pozadí oblohy, světelné znečištění ani filtr. Při širokopásmovém filtru (UV/IR-cut) na jasnější lokalitě obvykle omezí skutečnou délku snímku svit oblohy dříve, než toto číslo.",
+      "rateUnavailable": "Nastavte velikost pixelu fotoaparátu a ohniskovou vzdálenost dalekohledu v tomto profilu, aby se zobrazila maximální expozice.",
+      "rateError": "Nepodařilo se načíst rychlost sledování: {error}"
     },
     "track": {
       "step": "Sledovat jej",

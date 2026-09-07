@@ -149,11 +149,25 @@
       "confirmSetTargetMessage": "このターゲットをシーケンスのターゲットとして設定しますか？",
       "useNinaCache": "NINA キャッシュをターゲット画像に使用する",
       "setSequnceTarget": "シーケンスのターゲットに設定",
+      "sequenceTargetPicker": {
+        "title": "シーケンスのターゲット",
+        "hint": "読み込んだシーケンスのどのターゲットにフレーミング座標を適用するか選択します。",
+        "newTarget": "新しいターゲット",
+        "unnamed": "ターゲット {index}",
+        "position": "挿入位置",
+        "positionEnd": "最後に挿入",
+        "positionAfter": "{name} の後に挿入",
+        "addFailed": "新しいターゲットをシーケンスに追加できませんでした"
+      },
       "skyChart": {
         "altitude": "高度 (°)",
         "horizonProfile": "地平線プロファイル",
         "twilight": "薄明",
-        "astronomicalNight": "天文夜"
+        "astronomicalNight": "天文夜",
+        "moon": "月",
+        "toggleMoon": "月を表示",
+        "moonIlluminationFmt": "輝面比 {pct} %",
+        "moonSeparationFmt": "対象から {deg}°"
       },
       "mosaic": {
         "title": "モザイクモード",
@@ -193,7 +207,11 @@
       "infoTargetImage": "画像が真っ黒に表示される場合は、NINAで「オフライン・スカイマップ・キャッシュ」を設定するか、「NINAキャッシュを使用する」オプションを無効にする必要があります",
       "useCenter": "中心",
       "useRotate": "回転",
-      "customTarget": "カスタムターゲット"
+      "customTarget": "カスタムターゲット",
+      "solvedRotation": {
+        "short": "解析済み",
+        "tooltip": "最後に成功したプレートソルブのカメラ回転角"
+      }
     },
     "tutorial": {
       "previous": "前へ",
@@ -577,6 +595,10 @@
         "title": "入力の最適化",
         "touchOptimized": "タッチ操作用ピッカー"
       },
+      "haptics": {
+        "title": "触覚フィードバック",
+        "description": "ボタンを押したときに短く振動します"
+      },
       "beta": {
         "title": "ベータ版アップデート・チャンネル"
       },
@@ -638,6 +660,7 @@
         "astapDatabaseInstallFailed": "ASTAP スター データベースのインストールに失敗しました {exitCode}。",
         "astapDatabaseInstallSuccess": "ASTAP スター データベース {databaseId} が正常にインストールされました。",
         "astapDatabaseInstalling": "インストール中...",
+        "astapDatabaseProgressStalled": "30 秒間ダウンロードが進んでいません。ジョブの監視は継続しています。",
         "astapDatabaseJobStarted": "始めました",
         "astapDatabaseJobStartedMessage": "{databaseId} のインストール ジョブが開始されました。",
         "astapDatabaseJobStatus": "ジョブ {jobId}: {status}",
@@ -1136,7 +1159,8 @@
         "dso": {
           "targetName": "ターゲット名",
           "positionAngle": "位置角 (°)",
-          "loadFromFavorites": "お気に入りから読み込む"
+          "loadFromFavorites": "お気に入りから読み込む",
+          "loadIntoFraming": "フレーミングアシスタントに読み込む"
         },
         "warmCamera": {
           "duration": "時間 (分)"
@@ -1917,7 +1941,8 @@
       },
       "indi": {
         "settings": "ローテーター設定"
-      }
+      },
+      "solvedPositionAngle": "解析された天空角"
     },
     "flat": {
       "please_connect_flatDevice": "フラットデバイスを接続してください",
@@ -2148,7 +2173,11 @@
       "enter_name": "名前を入力",
       "save_to_favorites": "お気に入りターゲットに保存",
       "no_fav": "お気に入りが保存されていません",
-      "titel": "お気に入り"
+      "titel": "お気に入り",
+      "groups": {
+        "favorites": "お気に入り",
+        "telescopius": "Telescopius"
+      }
     },
     "helpers": {
       "imageModal": {
@@ -2264,7 +2293,7 @@
       "initializing": "初期化中...",
       "outdated": {
         "title": "プラグインが最新ではありません",
-        "message": "NINAのTouchNStarsプラグインが古いため、アップデートが必要です。",
+        "message": "{host}のTouchNStarsプラグインが古いため、アップデートが必要です。",
         "required": "必要なバージョン",
         "current": "現在のバージョン"
       }
@@ -2810,7 +2839,59 @@
         "noListsHint": "telescopius.comでターゲットリストを作成し、ここで再読み込みしてください。",
         "editOnTelescopius": "Telescopiusでリストを編集",
         "dataFrom": "データ取得元",
-        "connectionError": "Telescopiusへの接続に失敗しました。NINAのPCにインターネット接続が必要で、Telescopiusに少なくとも1つのターゲットリストが存在する必要があります。"
+        "connectionError": "Telescopiusへの接続に失敗しました。NINAのPCにインターネット接続が必要で、Telescopiusに少なくとも1つのターゲットリストが存在する必要があります。",
+        "myLists": "マイターゲットリスト",
+        "unnamedList": "名称未設定のリスト",
+        "showObjects": "天体を表示",
+        "hideObjects": "天体を非表示",
+        "ra": "赤経",
+        "dec": "赤緯",
+        "size": "サイズ",
+        "magnitude": "等級"
+      },
+      "import": {
+        "title": "CSV からターゲットをインポート",
+        "button": "CSV をインポート",
+        "description": "telescopius.com からエクスポートしたターゲットリストをインポートします。API キーは不要です。",
+        "landingTitle": "API キーがない場合は CSV をインポート",
+        "landingDescription": "telescopius.com で任意の観測リストを CSV ファイルとしてエクスポートし、ここでインポートします。インポートしたターゲットは、API 経由で読み込んだターゲットと同じようにフレーミング、導入、シーケンスターゲットに使用できます。",
+        "selectFile": "CSV ファイルを選択",
+        "listName": "リスト名",
+        "targetsFound": "{count} 件のターゲット",
+        "morePreview": "… ほか {count} 件",
+        "import": "インポート",
+        "cancel": "キャンセル",
+        "remove": "リストを削除",
+        "removeConfirm": "インポートしたリスト「{name}」を削除しますか？",
+        "importedLists": "インポートしたリスト",
+        "formatHelp": {
+          "title": "対応する CSV 形式",
+          "description": "telescopius.com の CSV エクスポートをそのまま利用できます。列は見出し名で判別するため、列の順序は問わず、余分な列は無視されます。",
+          "columns": "必須: Right Ascension (j2000), Declination (j2000) — 任意: Catalogue Entry, Familiar Name, Type, Constellation, Magnitude, Size, Notes",
+          "note": "座標は J2000 として 21h 38' 59\" / 57° 30' 50\" の形式で読み取られます。カンマ区切りとセミコロン区切りのどちらのファイルにも対応しています。"
+        },
+        "errors": {
+          "empty": "ファイルにデータが含まれていません。",
+          "tooLarge": "ファイルが大きすぎます（最大 2 MB）。",
+          "readFailed": "ファイルを読み取れませんでした。",
+          "missingColumns": "必須の列がありません: {columns}",
+          "noValidRows": "有効な座標を持つターゲットがファイル内に見つかりませんでした。",
+          "rowsSkipped": "座標を読み取れなかったため、{count} 行をスキップしました。",
+          "rowFailed": "{line} 行目",
+          "saveFailed": "インポートしたリストを保存できませんでした。"
+        }
+      },
+      "edit": {
+        "edit": "ターゲットを編集",
+        "name": "天体名",
+        "ra": "赤経",
+        "dec": "赤緯",
+        "rotation": "回転角",
+        "rotationEmpty": "なし",
+        "save": "保存",
+        "invalidCoordinates": "赤経または赤緯を読み取れませんでした。",
+        "invalidRotation": "回転角は数値で入力してください。",
+        "saveFailed": "変更を保存できませんでした。"
       }
     },
     "webcam": {
@@ -2893,7 +2974,6 @@
       "goUp": "上へ",
       "refresh": "更新",
       "imagesOnly": "画像/FITSのみ表示",
-      "currentPath": "現在のパス",
       "directoriesCount": "ディレクトリ数: {count}",
       "filesCount": "ファイル数: {count}",
       "newFolderPlaceholder": "新規フォルダ名",
@@ -2909,15 +2989,51 @@
       "modified": "更新",
       "isImage": "画像/FITSファイル",
       "selectEntryHint": "ファイルまたはディレクトリを選択すると詳細が表示されます。",
-      "onHoldTitle": "一時停止中",
-      "onHoldMessage": "名前の変更とファイルを開く操作は、現在意図的に制限されています。",
       "loadError": "ディレクトリの内容を読み込めませんでした。",
       "createError": "ディレクトリを作成できませんでした。",
       "deleteError": "削除できませんでした。",
       "deleteDirectoryTitle": "ディレクトリを削除",
       "deleteDirectoryMessage": "ディレクトリ \"{name}\" を中身ごと完全に削除しますか？",
       "deleteFileTitle": "ファイルを削除",
-      "deleteFileMessage": "ファイル \"{name}\" を削除しますか？"
+      "deleteFileMessage": "ファイル \"{name}\" を削除しますか？",
+      "searchPlaceholder": "このフォルダー内を検索…",
+      "noMatches": "フィルターに一致する項目はありません。",
+      "sortBy": "並べ替え",
+      "sortName": "名前",
+      "sortModified": "更新日時",
+      "sortSize": "サイズ",
+      "sortAsc": "昇順",
+      "sortDesc": "降順",
+      "selectAll": "すべて選択",
+      "clearSelection": "選択を解除",
+      "selectedCount": "{count} 件選択中",
+      "toggleSelection": "{name} を選択",
+      "renameError": "名前の変更に失敗しました。",
+      "renameEmptyName": "名前を入力してください。",
+      "deleteSelectedTitle": "選択項目を削除",
+      "deleteSelectedMessage": "{count} 件を削除しますか？ うち {directories} 件はディレクトリで、再帰的に削除されます。",
+      "download": {
+        "action": "デバイスに保存",
+        "progress": "{current}/{total}",
+        "doneTitle": "ダウンロード完了",
+        "doneMessage": "{count} 件のファイルをデバイスに保存しました。",
+        "failedTitle": "ダウンロード失敗",
+        "failedMessage": "{failed} 件のファイルを保存できませんでした（{succeeded} 件成功）。{error}"
+      },
+      "fits": {
+        "debugTitle": "画像診断",
+        "clipStrength": "ブラッククリッピング",
+        "stretchStrength": "ストレッチ係数",
+        "unlinked": "アンリンクストレッチ",
+        "debayer": "デベイヤー",
+        "pattern": "ベイヤーパターン",
+        "none": "なし",
+        "size": "サイズ",
+        "bitDepth": "ビット深度",
+        "header": "ヘッダー（主要キー）",
+        "unsupportedFile": "このファイル形式はプレビューできないため、代わりにデバイスに保存します。",
+        "previewFailed": "プレビューを生成できませんでした。ダウンロードボタンを使ってファイルを保存してください。"
+      }
     },
     "sequenceCreator": {
       "title": "シーケンスクリエーター",
@@ -4987,7 +5103,8 @@
       "tonightPicks": "今夜のおすすめ",
       "topForWindow": "選択した時間帯のベストターゲット",
       "preview": "プレビュー",
-      "framing": "フレーミング"
+      "framing": "フレーミング",
+      "topFmt": "上位 {n} 件"
     },
     "filters": {
       "title": "フィルター",
@@ -5000,7 +5117,9 @@
       "objectType": "天体の種類",
       "azSector": "空の方向（方位角セクター）",
       "onlyAboveHorizon": "高度 >0° のみ",
-      "limit": "表示上限"
+      "limit": "表示上限",
+      "countFmt": "{filtered} / {total} 天体 · 表示: {shown}",
+      "moonIlluminatedFmt": "輝面比 {pct}%"
     },
     "sort": {
       "title": "並べ替え",
@@ -5049,7 +5168,10 @@
       "altitudeVsTime": "高度 対 時刻",
       "sampleMin": "サンプル（分）",
       "directionAz": "方向（方位角）",
-      "separation": "離角 —"
+      "separation": "離角 —",
+      "separationFmt": "離角 {deg}°",
+      "pointsFmt": "{n} ポイント",
+      "visibleHoursFmt": "可視 {h} 時間"
     },
     "sectors": {
       "N_NE": "北 → 北東 (315°–45°)",
@@ -5066,7 +5188,9 @@
       "yes": "はい",
       "no": "いいえ",
       "loading": "読み込み中…",
-      "all": "すべて"
+      "all": "すべて",
+      "unnamedTarget": "名称未設定の天体",
+      "reset": "リセット"
     },
     "tooltips": {
       "favorite": "お気に入り",
@@ -5091,6 +5215,13 @@
     "errors": {
       "noSequenceAvailable": "利用可能なシーケンスがありません。最初にシーケンスを読み込んでください",
       "sequencerFailed": "シーケンサーに失敗しました"
+    },
+    "score": {
+      "excellent": "🔥 最高",
+      "veryGood": "⭐ とても良い",
+      "good": "👍 良い",
+      "difficult": "⚠️ 難あり",
+      "skip": "❌ 見送り"
     }
   },
   "indi": {
@@ -5317,7 +5448,15 @@
       "risesAt": "出：{time}",
       "setsAt": "没：{time}",
       "circumpolar": "周極— 沈まない",
-      "doesNotRise": "今夜は昇らない"
+      "doesNotRise": "今夜は昇らない",
+      "rate": "レート (RA/Dec)",
+      "maxExposure": "最大露光時間",
+      "maxExposureTitle": "最大露光時間とは？",
+      "maxExposureTooltip": "最大露光時間とはどういう意味ですか？",
+      "maxExposureExplanation": "彗星は背景の恒星に対して移動します。Quick Trackは赤道儀を彗星自身の速度で追尾させるため、各サブ露光内で動くのは彗星ではなく恒星の方になります -- そのずれが約1ピクセルを超えると、恒星が伸び始め、スタック後にわずかに卵形の星や甘い描写として現れます。この数値は、彗星の実際の角速度とカメラのプレートスケール（ピクセルサイズと焦点距離）に基づいて、その1ピクセルのずれに達する露光時間です。",
+      "maxExposureCaveat": "これはあくまで追尾上の上限であり、空の背景光や光害、フィルターについては考慮していません。明るい撮影地で広帯域（UV/IRカット）フィルターを使用している場合、この数値に達するよりずっと前に空の明るさが実際のサブ露光時間を制限することが一般的です。",
+      "rateUnavailable": "最大露光時間を表示するには、このプロファイルでカメラのピクセルサイズと望遠鏡の焦点距離を設定してください。",
+      "rateError": "追尾レートを読み込めませんでした: {error}"
     },
     "track": {
       "step": "追尾する",

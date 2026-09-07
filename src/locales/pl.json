@@ -140,6 +140,16 @@
       "confirmSetTargetMessage": "Czy na pewno chcesz ustawić ten cel jako cel sekwencji?",
       "useNinaCache": "Użyj pamięci podręcznej NINA dla obrazu celu",
       "setSequnceTarget": "ustaw jako cel sekwencji",
+      "sequenceTargetPicker": {
+        "title": "Cel sekwencji",
+        "hint": "Wybierz cel z załadowanej sekwencji, który otrzyma współrzędne kadrowania.",
+        "newTarget": "Nowy cel",
+        "unnamed": "Cel {index}",
+        "position": "Pozycja wstawiania",
+        "positionEnd": "Na końcu",
+        "positionAfter": "Po {name}",
+        "addFailed": "Nie można dodać nowego celu do sekwencji"
+      },
       "search": {
         "title": "Szukaj",
         "placeholder": "Wprowadź szukaną frazę...",
@@ -169,7 +179,11 @@
         "altitude": "Wysokość (°)",
         "horizonProfile": "Profil horyzontu",
         "twilight": "Zmierzch",
-        "astronomicalNight": "Noc astronomiczna"
+        "astronomicalNight": "Noc astronomiczna",
+        "moon": "Księżyc",
+        "toggleMoon": "Pokaż Księżyc",
+        "moonIlluminationFmt": "{pct} % oświetlenia",
+        "moonSeparationFmt": "{deg}° od celu"
       },
       "mosaic": {
         "title": "Tryb mozaiki",
@@ -184,7 +198,11 @@
         "panelsSet": "panele ustawione w kolejności",
         "willBeSaved": "panele zostaną zapisane indywidualnie"
       },
-      "customTarget": "Cel niestandardowy"
+      "customTarget": "Cel niestandardowy",
+      "solvedRotation": {
+        "short": "rozwiązane",
+        "tooltip": "Obrót kamery z ostatniego udanego plate solve"
+      }
     },
     "tutorial": {
       "previous": "Poprzedni",
@@ -526,6 +544,10 @@
         "title": "Optymalizacja wejścia",
         "touchOptimized": "Selektor zoptymalizowany dla dotyku"
       },
+      "haptics": {
+        "title": "Wibracje dotykowe",
+        "description": "Krótka wibracja przy naciśnięciu przycisków"
+      },
       "beta": {
         "title": "Kanał aktualizacji beta"
       },
@@ -587,6 +609,7 @@
         "astapDatabaseInstallFailed": "Instalacja bazy danych gwiazdy ASTAP nie powiodła się{exitCode}.",
         "astapDatabaseInstallSuccess": "Baza danych gwiazdek ASTAP {databaseId} została pomyślnie zainstalowana.",
         "astapDatabaseInstalling": "Instaluję...",
+        "astapDatabaseProgressStalled": "Brak postępu pobierania przez 30 sekund. Zadanie jest nadal monitorowane.",
         "astapDatabaseJobStarted": "zaczął",
         "astapDatabaseJobStartedMessage": "Rozpoczęto zadanie instalacji dla {databaseId}.",
         "astapDatabaseJobStatus": "Stanowisko {jobId}: {status}",
@@ -1118,7 +1141,8 @@
         "dso": {
           "targetName": "nazwa zasobu docelowego",
           "positionAngle": "Kąt pozycyjny",
-          "loadFromFavorites": "Załaduj z ulubionych"
+          "loadFromFavorites": "Załaduj z ulubionych",
+          "loadIntoFraming": "Załaduj do Asystenta kadrowania"
         },
         "warmCamera": {
           "duration": "Czas trwania (min)"
@@ -1908,7 +1932,8 @@
       },
       "indi": {
         "settings": "Ustawienia rotatora"
-      }
+      },
+      "solvedPositionAngle": "Rozwiązany kąt na niebie"
     },
     "flat": {
       "please_connect_flatDevice": "Proszę podłączyć urządzenie flat",
@@ -2139,7 +2164,11 @@
       "enter_name": "Wprowadź nazwę",
       "no_fav": "Brak zapisanych ulubionych",
       "titel": "Ulubione",
-      "save_to_favorites": "Zapisz w ulubionych celach"
+      "save_to_favorites": "Zapisz w ulubionych celach",
+      "groups": {
+        "favorites": "Ulubione",
+        "telescopius": "Telescopius"
+      }
     },
     "helpers": {
       "imageModal": {
@@ -2264,7 +2293,7 @@
       "initializing": "Inicjalizacja...",
       "outdated": {
         "title": "Wtyczka przestarzała",
-        "message": "Wtyczka TouchNStars w NINA jest przestarzała i wymaga aktualizacji.",
+        "message": "Wtyczka TouchNStars w {host} jest przestarzała i wymaga aktualizacji.",
         "required": "Wymagana wersja",
         "current": "Aktualna wersja"
       }
@@ -2810,7 +2839,59 @@
         "noListsHint": "Utwórz listy celów na telescopius.com, a następnie załaduj je ponownie tutaj.",
         "editOnTelescopius": "Edytuj listy w Telescopius",
         "dataFrom": "Dane z",
-        "connectionError": "Połączenie z Telescopius nie powiodło się. Komputer z NINA wymaga połączenia internetowego i przynajmniej jedna lista celów musi istnieć w Telescopius."
+        "connectionError": "Połączenie z Telescopius nie powiodło się. Komputer z NINA wymaga połączenia internetowego i przynajmniej jedna lista celów musi istnieć w Telescopius.",
+        "myLists": "Moje listy celów",
+        "unnamedList": "Lista bez nazwy",
+        "showObjects": "Pokaż obiekty",
+        "hideObjects": "Ukryj obiekty",
+        "ra": "RA",
+        "dec": "GRUDZIEŃ",
+        "size": "Rozmiar",
+        "magnitude": "Mag"
+      },
+      "import": {
+        "title": "Importuj cele z pliku CSV",
+        "button": "Importuj CSV",
+        "description": "Zaimportuj listę celów wyeksportowaną z telescopius.com. Nie jest do tego potrzebny klucz API.",
+        "landingTitle": "Nie masz klucza API? Zaimportuj CSV",
+        "landingDescription": "Wyeksportuj dowolną listę obserwacyjną z telescopius.com jako plik CSV i zaimportuj ją tutaj. Zaimportowanych celów można używać do kadrowania, najazdu i jako celu sekwencji tak samo jak celów wczytanych przez API.",
+        "selectFile": "Wybierz plik CSV",
+        "listName": "Nazwa listy",
+        "targetsFound": "Cele: {count}",
+        "morePreview": "… i {count} więcej",
+        "import": "Importuj",
+        "cancel": "Anuluj",
+        "remove": "Usuń listę",
+        "removeConfirm": "Usunąć zaimportowaną listę „{name}”?",
+        "importedLists": "Zaimportowane listy",
+        "formatHelp": {
+          "title": "Obsługiwany format CSV",
+          "description": "Eksport CSV z telescopius.com jest obsługiwany bezpośrednio. Kolumny są rozpoznawane po nagłówkach, więc ich kolejność nie ma znaczenia, a dodatkowe kolumny są ignorowane.",
+          "columns": "Wymagane: Right Ascension (j2000), Declination (j2000) — Opcjonalne: Catalogue Entry, Familiar Name, Type, Constellation, Magnitude, Size, Notes",
+          "note": "Współrzędne są odczytywane jako J2000 w formacie 21h 38' 59\" / 57° 30' 50\". Obsługiwane są pliki rozdzielane przecinkiem i średnikiem."
+        },
+        "errors": {
+          "empty": "Plik nie zawiera żadnych danych.",
+          "tooLarge": "Plik jest za duży (maks. 2 MB).",
+          "readFailed": "Nie udało się odczytać pliku.",
+          "missingColumns": "Brakuje wymaganych kolumn: {columns}",
+          "noValidRows": "W pliku nie znaleziono celu z prawidłowymi współrzędnymi.",
+          "rowsSkipped": "Pominięto {count} wierszy, ponieważ nie udało się odczytać ich współrzędnych.",
+          "rowFailed": "Wiersz {line}",
+          "saveFailed": "Nie udało się zapisać zaimportowanej listy."
+        }
+      },
+      "edit": {
+        "edit": "Edytuj cel",
+        "name": "Nazwa",
+        "ra": "Rektascensja",
+        "dec": "Deklinacja",
+        "rotation": "Obrót",
+        "rotationEmpty": "brak",
+        "save": "Zapisz",
+        "invalidCoordinates": "Nie udało się odczytać rektascensji lub deklinacji.",
+        "invalidRotation": "Obrót musi być liczbą.",
+        "saveFailed": "Nie udało się zapisać zmiany."
       }
     },
     "webcam": {
@@ -4439,7 +4520,6 @@
       "goUp": "Up",
       "refresh": "Refresh",
       "imagesOnly": "Images/FITS only",
-      "currentPath": "Current Path",
       "directoriesCount": "Directories: {count}",
       "filesCount": "Files: {count}",
       "newFolderPlaceholder": "New folder name",
@@ -4455,15 +4535,51 @@
       "modified": "Modified",
       "isImage": "Image/FITS",
       "selectEntryHint": "Select a file or directory to see details.",
-      "onHoldTitle": "On Hold",
-      "onHoldMessage": "Rename and file open actions are intentionally on hold for now.",
       "loadError": "Failed to load directory contents.",
       "createError": "Failed to create directory.",
       "deleteError": "Failed to delete entry.",
       "deleteDirectoryTitle": "Delete Directory",
       "deleteDirectoryMessage": "Delete directory \"{name}\" recursively?",
       "deleteFileTitle": "Delete File",
-      "deleteFileMessage": "Delete file \"{name}\"?"
+      "deleteFileMessage": "Delete file \"{name}\"?",
+      "searchPlaceholder": "Szukaj w tym folderze…",
+      "noMatches": "Żadne pozycje nie pasują do filtra.",
+      "sortBy": "Sortuj według",
+      "sortName": "Nazwa",
+      "sortModified": "Data modyfikacji",
+      "sortSize": "Rozmiar",
+      "sortAsc": "Rosnąco",
+      "sortDesc": "Malejąco",
+      "selectAll": "Zaznacz wszystko",
+      "clearSelection": "Wyczyść zaznaczenie",
+      "selectedCount": "Zaznaczono: {count}",
+      "toggleSelection": "Zaznacz {name}",
+      "renameError": "Nie udało się zmienić nazwy.",
+      "renameEmptyName": "Wprowadź nazwę.",
+      "deleteSelectedTitle": "Usuń zaznaczenie",
+      "deleteSelectedMessage": "Usunąć {count} pozycji? {directories} z nich to katalogi, usuwane rekurencyjnie.",
+      "download": {
+        "action": "Zapisz na urządzeniu",
+        "progress": "{current}/{total}",
+        "doneTitle": "Pobieranie zakończone",
+        "doneMessage": "Zapisano {count} plik(ów) na urządzeniu.",
+        "failedTitle": "Pobieranie nie powiodło się",
+        "failedMessage": "Nie udało się zapisać {failed} plik(ów) ({succeeded} pomyślnie). {error}"
+      },
+      "fits": {
+        "debugTitle": "Diagnostyka obrazu",
+        "clipStrength": "Przycięcie czerni",
+        "stretchStrength": "Współczynnik rozciągania",
+        "unlinked": "Niezależne rozciąganie",
+        "debayer": "Debayer",
+        "pattern": "Wzorzec Bayera",
+        "none": "brak",
+        "size": "Rozmiar",
+        "bitDepth": "Głębia bitowa",
+        "header": "Nagłówek (główne klucze)",
+        "unsupportedFile": "Tego typu pliku nie można podejrzeć, zamiast tego zostanie zapisany na urządzeniu.",
+        "previewFailed": "Nie udało się wygenerować podglądu. Użyj przycisku pobierania, aby zapisać plik."
+      }
     },
     "phd2logviewer": {
       "cal": {
@@ -4987,7 +5103,8 @@
       "tonightPicks": "Wybór na dziś",
       "topForWindow": "Najlepsze cele dla wybranego okna czasowego",
       "preview": "Podgląd",
-      "framing": "Kadrowanie"
+      "framing": "Kadrowanie",
+      "topFmt": "Top {n}"
     },
     "filters": {
       "title": "Filtry",
@@ -5000,7 +5117,9 @@
       "objectType": "Typ obiektu",
       "azSector": "Kierunek nieba (sektor azymutalny)",
       "onlyAboveHorizon": "Tylko >0° wysokości",
-      "limit": "Limit"
+      "limit": "Limit",
+      "countFmt": "{filtered} / {total} celów · pokazano: {shown}",
+      "moonIlluminatedFmt": "{pct}% oświetlenia"
     },
     "sort": {
       "title": "Sortowanie",
@@ -5049,7 +5168,10 @@
       "altitudeVsTime": "Wysokość vs. Czas",
       "sampleMin": "Próbka (min)",
       "directionAz": "Kierunek (Az)",
-      "separation": "Separacja —"
+      "separation": "Separacja —",
+      "separationFmt": "Separacja {deg}°",
+      "pointsFmt": "{n} punktów",
+      "visibleHoursFmt": "{h} h widoczny"
     },
     "sectors": {
       "N_NE": "Północ → Północny-Wschód (315°–45°)",
@@ -5066,7 +5188,9 @@
       "yes": "Tak",
       "no": "Nie",
       "loading": "Ładowanie…",
-      "all": "Wszystkie"
+      "all": "Wszystkie",
+      "unnamedTarget": "Cel bez nazwy",
+      "reset": "Resetuj"
     },
     "tooltips": {
       "favorite": "Ulubione",
@@ -5091,6 +5215,13 @@
     "errors": {
       "noSequenceAvailable": "Brak dostępnej sekwencji, najpierw załaduj sekwencję",
       "sequencerFailed": "Sekwencer nie powiódł się"
+    },
+    "score": {
+      "excellent": "🔥 Doskonały",
+      "veryGood": "⭐ Bardzo dobry",
+      "good": "👍 Dobry",
+      "difficult": "⚠️ Trudny",
+      "skip": "❌ Pomiń"
     }
   },
   "indi": {
@@ -5317,7 +5448,15 @@
       "risesAt": "Wschód {time}",
       "setsAt": "Zachód {time}",
       "circumpolar": "Okołobiegunowy — nigdy nie zachodzi",
-      "doesNotRise": "Nie wschodzi dziś w nocy"
+      "doesNotRise": "Nie wschodzi dziś w nocy",
+      "rate": "PRĘDKOŚĆ (RA/DEC)",
+      "maxExposure": "MAKS. EKSPOZYCJA",
+      "maxExposureTitle": "Czym jest maksymalna ekspozycja?",
+      "maxExposureTooltip": "Co oznacza maksymalna ekspozycja?",
+      "maxExposureExplanation": "Komety poruszają się względem gwiazd w tle. Quick Track sprawia, że montaż podąża z własną prędkością komety, więc to gwiazdy przesuwają się w każdej klatce, a nie kometa -- gdy to przesunięcie przekroczy około 1 piksel, gwiazdy zaczynają się wydłużać, co po stackowaniu objawia się lekko owalnymi gwiazdami i mniej ostrymi szczegółami. Ta liczba to czas ekspozycji, przy którym osiągane jest przesunięcie o 1 piksel, na podstawie rzeczywistej prędkości kątowej komety i skali twojego aparatu (rozmiar piksela i ogniskowa).",
+      "maxExposureCaveat": "To tylko limit śledzenia -- nie uwzględnia tła nieba, zanieczyszczenia świetlnego ani filtra. Przy filtrze szerokopasmowym (UV/IR-cut) w jaśniejszej lokalizacji poświata nieba zwykle ogranicza rzeczywisty czas ekspozycji dużo wcześniej niż ta liczba.",
+      "rateUnavailable": "Ustaw rozmiar piksela aparatu i ogniskową teleskopu w tym profilu, aby zobaczyć maksymalną ekspozycję.",
+      "rateError": "Nie udało się wczytać prędkości śledzenia: {error}"
     },
     "track": {
       "step": "Śledź go",

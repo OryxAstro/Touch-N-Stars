@@ -140,6 +140,16 @@
       "confirmSetTargetMessage": "Weet u zeker dat u dit Doel wilt instellen als het sequentie Doel?",
       "useNinaCache": "Gebruik NINA cache voor het Doel beeld",
       "setSequnceTarget": "gebruik als sequentie Doel",
+      "sequenceTargetPicker": {
+        "title": "Sequentiedoel",
+        "hint": "Kies welk doel van de geladen sequentie de framing-coördinaten ontvangt.",
+        "newTarget": "Nieuw doel",
+        "unnamed": "Doel {index}",
+        "position": "Invoegpositie",
+        "positionEnd": "Aan het einde",
+        "positionAfter": "Na {name}",
+        "addFailed": "Het nieuwe doel kon niet aan de sequentie worden toegevoegd"
+      },
       "search": {
         "title": "Zoeken",
         "placeholder": "Voer een zoek term in...",
@@ -169,7 +179,11 @@
         "altitude": "Hoogte (°)",
         "horizonProfile": "Horizonprofiel",
         "twilight": "Schemering",
-        "astronomicalNight": "Astronomische nacht"
+        "astronomicalNight": "Astronomische nacht",
+        "moon": "Maan",
+        "toggleMoon": "Maan tonen",
+        "moonIlluminationFmt": "{pct} % verlicht",
+        "moonSeparationFmt": "{deg}° van doel"
       },
       "mosaic": {
         "title": "Mozaïekmodus",
@@ -184,7 +198,11 @@
         "panelsSet": "panelen op volgorde geplaatst",
         "willBeSaved": "panelen worden afzonderlijk opgeslagen"
       },
-      "customTarget": "Aangepast doel"
+      "customTarget": "Aangepast doel",
+      "solvedRotation": {
+        "short": "opgelost",
+        "tooltip": "Camerarotatie van de laatste geslaagde plate solve"
+      }
     },
     "tutorial": {
       "previous": "Vorige",
@@ -526,6 +544,10 @@
         "title": "Invoeroptimalisatie",
         "touchOptimized": "Touch-geoptimaliseerde kiezer"
       },
+      "haptics": {
+        "title": "Haptische feedback",
+        "description": "Korte trilling bij het indrukken van knoppen"
+      },
       "beta": {
         "title": "Beta Update Kanaal"
       },
@@ -587,6 +609,7 @@
         "astapDatabaseInstallFailed": "Installatie van ASTAP-sterrendatabase mislukt{exitCode}.",
         "astapDatabaseInstallSuccess": "ASTAP-sterrendatabase {databaseId} is succesvol geïnstalleerd.",
         "astapDatabaseInstalling": "Installeren...",
+        "astapDatabaseProgressStalled": "Al 30 seconden geen downloadvoortgang. De taak wordt nog steeds bewaakt.",
         "astapDatabaseJobStarted": "begonnen",
         "astapDatabaseJobStartedMessage": "Installatietaak gestart voor {databaseId}.",
         "astapDatabaseJobStatus": "Taak {jobId}: {status}",
@@ -1118,7 +1141,8 @@
         "dso": {
           "targetName": "Projectnaam:",
           "positionAngle": "Positiehoek",
-          "loadFromFavorites": "Laden uit favorieten"
+          "loadFromFavorites": "Laden uit favorieten",
+          "loadIntoFraming": "Laden in Framing-assistent"
         },
         "warmCamera": {
           "duration": "Duur (min)"
@@ -1908,7 +1932,8 @@
       },
       "indi": {
         "settings": "Rotator-instellingen"
-      }
+      },
+      "solvedPositionAngle": "Opgeloste hemelhoek"
     },
     "flat": {
       "please_connect_flatDevice": "Verbind met flat apparaat",
@@ -2139,7 +2164,11 @@
       "enter_name": "Voer naam in",
       "no_fav": "Geen favorieten opgeslagen",
       "titel": "Favorieten",
-      "save_to_favorites": "Opslaan in favoriete doelen"
+      "save_to_favorites": "Opslaan in favoriete doelen",
+      "groups": {
+        "favorites": "Favorieten",
+        "telescopius": "Telescopius"
+      }
     },
     "helpers": {
       "imageModal": {
@@ -2264,7 +2293,7 @@
       "initializing": "Initialiseren...",
       "outdated": {
         "title": "Plugin Verouderd",
-        "message": "De TouchNStars Plugin in NINA is verouderd en moet worden vernieuwd.",
+        "message": "De TouchNStars Plugin in {host} is verouderd en moet worden vernieuwd.",
         "required": "Benodigde Versie",
         "current": "Huidige Versie"
       }
@@ -2810,7 +2839,59 @@
         "noListsHint": "Maak object/doellijst aan in telescopius.com laad deze hier in.",
         "editOnTelescopius": "Bewerk lijsten in Telescopius",
         "dataFrom": "Data van",
-        "connectionError": "Connectie met Telescopius mislukt. De NINA PC heeft een active internetverbinding nodig en er moet minimaal 1 lijst aangemaakt zijn in Telescopius."
+        "connectionError": "Connectie met Telescopius mislukt. De NINA PC heeft een active internetverbinding nodig en er moet minimaal 1 lijst aangemaakt zijn in Telescopius.",
+        "myLists": "Mijn doellijsten",
+        "unnamedList": "Naamloze lijst",
+        "showObjects": "Objecten tonen",
+        "hideObjects": "Objecten verbergen",
+        "ra": "RA",
+        "dec": "DEC",
+        "size": "Grootte",
+        "magnitude": "Mag"
+      },
+      "import": {
+        "title": "Doelen importeren uit CSV",
+        "button": "CSV importeren",
+        "description": "Importeer een doellijst die vanaf telescopius.com is geëxporteerd. Hiervoor is geen API-sleutel nodig.",
+        "landingTitle": "Geen API-sleutel? Importeer een CSV",
+        "landingDescription": "Exporteer een willekeurige waarneemlijst op telescopius.com als CSV-bestand en importeer die hier. De geïmporteerde doelen kun je net zo gebruiken voor framing, slew en als sequentiedoel als doelen die via de API zijn geladen.",
+        "selectFile": "CSV-bestand kiezen",
+        "listName": "Lijstnaam",
+        "targetsFound": "{count} doelen",
+        "morePreview": "… en nog {count}",
+        "import": "Importeren",
+        "cancel": "Annuleren",
+        "remove": "Lijst verwijderen",
+        "removeConfirm": "Geïmporteerde lijst \"{name}\" verwijderen?",
+        "importedLists": "Geïmporteerde lijsten",
+        "formatHelp": {
+          "title": "Ondersteund CSV-formaat",
+          "description": "De CSV-export van telescopius.com wordt direct ondersteund. Kolommen worden herkend aan hun kopregel, dus de volgorde maakt niet uit en extra kolommen worden genegeerd.",
+          "columns": "Vereist: Right Ascension (j2000), Declination (j2000) — Optioneel: Catalogue Entry, Familiar Name, Type, Constellation, Magnitude, Size, Notes",
+          "note": "Coördinaten worden gelezen als J2000 in het formaat 21h 38' 59\" / 57° 30' 50\". Zowel komma- als puntkomma-gescheiden bestanden worden ondersteund."
+        },
+        "errors": {
+          "empty": "Het bestand bevat geen gegevens.",
+          "tooLarge": "Het bestand is te groot (max. 2 MB).",
+          "readFailed": "Het bestand kon niet worden gelezen.",
+          "missingColumns": "Vereiste kolommen ontbreken: {columns}",
+          "noValidRows": "Geen doel met geldige coördinaten in het bestand gevonden.",
+          "rowsSkipped": "{count} regels zijn overgeslagen omdat hun coördinaten onleesbaar waren.",
+          "rowFailed": "Regel {line}",
+          "saveFailed": "De geïmporteerde lijst kon niet worden opgeslagen."
+        }
+      },
+      "edit": {
+        "edit": "Doel bewerken",
+        "name": "Naam",
+        "ra": "Rechte klimming",
+        "dec": "Declinatie",
+        "rotation": "Rotatie",
+        "rotationEmpty": "geen",
+        "save": "Opslaan",
+        "invalidCoordinates": "De rechte klimming of declinatie kon niet worden gelezen.",
+        "invalidRotation": "De rotatie moet een getal zijn.",
+        "saveFailed": "De wijziging kon niet worden opgeslagen."
       }
     },
     "webcam": {
@@ -4439,7 +4520,6 @@
       "goUp": "Up",
       "refresh": "Refresh",
       "imagesOnly": "Images/FITS only",
-      "currentPath": "Current Path",
       "directoriesCount": "Directories: {count}",
       "filesCount": "Files: {count}",
       "newFolderPlaceholder": "New folder name",
@@ -4455,15 +4535,51 @@
       "modified": "Modified",
       "isImage": "Image/FITS",
       "selectEntryHint": "Select a file or directory to see details.",
-      "onHoldTitle": "On Hold",
-      "onHoldMessage": "Rename and file open actions are intentionally on hold for now.",
       "loadError": "Failed to load directory contents.",
       "createError": "Failed to create directory.",
       "deleteError": "Failed to delete entry.",
       "deleteDirectoryTitle": "Delete Directory",
       "deleteDirectoryMessage": "Delete directory \"{name}\" recursively?",
       "deleteFileTitle": "Delete File",
-      "deleteFileMessage": "Delete file \"{name}\"?"
+      "deleteFileMessage": "Delete file \"{name}\"?",
+      "searchPlaceholder": "Zoeken in deze map…",
+      "noMatches": "Geen items komen overeen met het filter.",
+      "sortBy": "Sorteren op",
+      "sortName": "Naam",
+      "sortModified": "Wijzigingsdatum",
+      "sortSize": "Grootte",
+      "sortAsc": "Oplopend",
+      "sortDesc": "Aflopend",
+      "selectAll": "Alles selecteren",
+      "clearSelection": "Selectie wissen",
+      "selectedCount": "{count} geselecteerd",
+      "toggleSelection": "{name} selecteren",
+      "renameError": "Hernoemen mislukt.",
+      "renameEmptyName": "Voer een naam in.",
+      "deleteSelectedTitle": "Selectie verwijderen",
+      "deleteSelectedMessage": "{count} items verwijderen? {directories} daarvan zijn mappen en worden recursief verwijderd.",
+      "download": {
+        "action": "Opslaan op apparaat",
+        "progress": "{current}/{total}",
+        "doneTitle": "Download voltooid",
+        "doneMessage": "{count} bestand(en) opgeslagen op het apparaat.",
+        "failedTitle": "Download mislukt",
+        "failedMessage": "{failed} bestand(en) konden niet worden opgeslagen ({succeeded} gelukt). {error}"
+      },
+      "fits": {
+        "debugTitle": "Beelddiagnose",
+        "clipStrength": "Zwartpuntclipping",
+        "stretchStrength": "Stretchfactor",
+        "unlinked": "Ontkoppelde stretch",
+        "debayer": "Debayer",
+        "pattern": "Bayer-patroon",
+        "none": "geen",
+        "size": "Grootte",
+        "bitDepth": "Bitdiepte",
+        "header": "Header (belangrijkste sleutels)",
+        "unsupportedFile": "Dit bestandstype kan niet worden voorvertoond en wordt in plaats daarvan op het apparaat opgeslagen.",
+        "previewFailed": "De voorvertoning kon niet worden gemaakt. Gebruik de downloadknop om het bestand op te slaan."
+      }
     },
     "phd2logviewer": {
       "cal": {
@@ -4987,7 +5103,8 @@
       "tonightPicks": "Selectie van vanavond",
       "topForWindow": "Beste doelen voor het geselecteerde tijdvenster",
       "preview": "Voorbeeld",
-      "framing": "Kadrering"
+      "framing": "Kadrering",
+      "topFmt": "Top {n}"
     },
     "filters": {
       "title": "Filters",
@@ -5000,7 +5117,9 @@
       "objectType": "Objecttype",
       "azSector": "Hemelrichting (azimut-sector)",
       "onlyAboveHorizon": "Alleen >0° hoogte",
-      "limit": "Limiet"
+      "limit": "Limiet",
+      "countFmt": "{filtered} / {total} doelen · getoond: {shown}",
+      "moonIlluminatedFmt": "{pct}% verlicht"
     },
     "sort": {
       "title": "Sortering",
@@ -5049,7 +5168,10 @@
       "altitudeVsTime": "Hoogte vs. Tijd",
       "sampleMin": "Monster (min)",
       "directionAz": "Richting (Az)",
-      "separation": "Separatie —"
+      "separation": "Separatie —",
+      "separationFmt": "Separatie {deg}°",
+      "pointsFmt": "{n} punten",
+      "visibleHoursFmt": "{h} u zichtbaar"
     },
     "sectors": {
       "N_NE": "Noord → Noordoost (315°–45°)",
@@ -5066,7 +5188,9 @@
       "yes": "Ja",
       "no": "Nee",
       "loading": "Laden…",
-      "all": "Alle"
+      "all": "Alle",
+      "unnamedTarget": "Naamloos doel",
+      "reset": "Resetten"
     },
     "tooltips": {
       "favorite": "Favoriet",
@@ -5091,6 +5215,13 @@
     "errors": {
       "noSequenceAvailable": "Geen sequentie beschikbaar, laad eerst een sequentie",
       "sequencerFailed": "Sequencer mislukt"
+    },
+    "score": {
+      "excellent": "🔥 Uitstekend",
+      "veryGood": "⭐ Zeer goed",
+      "good": "👍 Goed",
+      "difficult": "⚠️ Moeilijk",
+      "skip": "❌ Overslaan"
     }
   },
   "indi": {
@@ -5317,7 +5448,15 @@
       "risesAt": "Komt op {time}",
       "setsAt": "Gaat onder {time}",
       "circumpolar": "Circumpolair — gaat nooit onder",
-      "doesNotRise": "Komt vannacht niet op"
+      "doesNotRise": "Komt vannacht niet op",
+      "rate": "SNELHEID (RA/DEC)",
+      "maxExposure": "MAX. BELICHTING",
+      "maxExposureTitle": "Wat is maximale belichting?",
+      "maxExposureTooltip": "Wat betekent maximale belichting?",
+      "maxExposureExplanation": "Kometen bewegen ten opzichte van de achtergrondsterren. Quick Track laat de montering volgen op de eigen snelheid van de komeet, waardoor het de sterren zijn die binnen elke opname verschuiven in plaats van de komeet -- zodra die verschuiving ongeveer 1 pixel overschrijdt, beginnen sterren te rekken, wat zich na stacken uit als licht eivormige sterren en zachtere details. Dit getal is de belichtingsduur waarbij die verschuiving van 1 pixel wordt bereikt, gebaseerd op de werkelijke hoeksnelheid van de komeet en de schaal van je camera (pixelgrootte en brandpuntsafstand).",
+      "maxExposureCaveat": "Het is uitsluitend een volglimiet -- er wordt geen rekening gehouden met achtergrondlicht, lichtvervuiling of je filter. Met een breedbandfilter (UV/IR-cut) op een lichtere locatie beperkt de hemelgloed meestal de werkelijke opnameduur al ruim voordat dit getal wordt bereikt.",
+      "rateUnavailable": "Stel een pixelgrootte van de camera en brandpuntsafstand van de telescoop in dit profiel in om de maximale belichting te zien.",
+      "rateError": "Kon volgsnelheid niet laden: {error}"
     },
     "track": {
       "step": "Volg het",

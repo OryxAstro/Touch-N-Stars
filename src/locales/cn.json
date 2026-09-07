@@ -140,6 +140,16 @@
       "confirmSetTargetMessage": "您确定要将此目标设置为序列目标吗？",
       "useNinaCache": "使用 NINA 缓存作为目标图像",
       "setSequnceTarget": "设置为序列目标",
+      "sequenceTargetPicker": {
+        "title": "序列目标",
+        "hint": "选择加载序列中的哪个目标接收取景坐标。",
+        "newTarget": "新目标",
+        "unnamed": "目标 {index}",
+        "position": "插入位置",
+        "positionEnd": "在末尾",
+        "positionAfter": "在 {name} 之后",
+        "addFailed": "无法将新目标添加到序列中"
+      },
       "search": {
         "title": "搜索",
         "placeholder": "输入搜索内容...",
@@ -169,7 +179,11 @@
         "altitude": "高度 (°)",
         "horizonProfile": "地平线轮廓",
         "twilight": "晨昏",
-        "astronomicalNight": "天文夜"
+        "astronomicalNight": "天文夜",
+        "moon": "月亮",
+        "toggleMoon": "显示月亮",
+        "moonIlluminationFmt": "月面照明 {pct} %",
+        "moonSeparationFmt": "距目标 {deg}°"
       },
       "mosaic": {
         "columns": "专栏",
@@ -184,7 +198,11 @@
         "title": "马赛克模式",
         "willBeSaved": "面板将单独保存"
       },
-      "customTarget": "Custom Target"
+      "customTarget": "Custom Target",
+      "solvedRotation": {
+        "short": "已解析",
+        "tooltip": "上次成功 Plate Solve 得到的相机旋转角"
+      }
     },
     "tutorial": {
       "previous": "上一步",
@@ -526,6 +544,10 @@
         "title": "输入优化",
         "touchOptimized": "触摸优化选择器"
       },
+      "haptics": {
+        "title": "触觉反馈",
+        "description": "按下按钮时短暂震动"
+      },
       "beta": {
         "title": "测试版更新通道"
       },
@@ -587,6 +609,7 @@
         "astapDatabaseInstallFailed": "ASTAP star database install failed{exitCode}.",
         "astapDatabaseInstallSuccess": "ASTAP star database {databaseId} installed successfully.",
         "astapDatabaseInstalling": "Installing...",
+        "astapDatabaseProgressStalled": "下载已 30 秒没有进展。仍在监控任务。",
         "astapDatabaseJobStarted": "started",
         "astapDatabaseJobStartedMessage": "Install job started for {databaseId}.",
         "astapDatabaseJobStatus": "Job {jobId}: {status}",
@@ -1118,7 +1141,8 @@
         "dso": {
           "targetName": "target name\n\n目标姓名",
           "positionAngle": "位置",
-          "loadFromFavorites": "从收藏夹加载"
+          "loadFromFavorites": "从收藏夹加载",
+          "loadIntoFraming": "加载到取景助手"
         },
         "warmCamera": {
           "duration": "持续时间（分钟）"
@@ -1908,7 +1932,8 @@
       },
       "indi": {
         "settings": "旋转器设置"
-      }
+      },
+      "solvedPositionAngle": "解析出的天空角"
     },
     "flat": {
       "please_connect_flatDevice": "请连接平场设备",
@@ -2139,7 +2164,11 @@
       "enter_name": "输入名称",
       "no_fav": "没有已保存的收藏",
       "titel": "收藏夹",
-      "save_to_favorites": "保存到收藏的目标"
+      "save_to_favorites": "保存到收藏的目标",
+      "groups": {
+        "favorites": "收藏夹",
+        "telescopius": "Telescopius"
+      }
     },
     "helpers": {
       "imageModal": {
@@ -2264,7 +2293,7 @@
       "initializing": "初始化中...",
       "outdated": {
         "title": "插件已过时",
-        "message": "NINA中的TouchNStars插件已过时，需要更新。",
+        "message": "{host}中的TouchNStars插件已过时，需要更新。",
         "required": "所需版本",
         "current": "当前版本"
       }
@@ -2810,7 +2839,59 @@
         "noListsHint": "在 telescopius.com 上创建目标列表，然后在此处重新加载。",
         "editOnTelescopius": "在 Telescopius 上编辑列表",
         "dataFrom": "数据来自",
-        "connectionError": "与 Telescopius 的连接失败。NINA PC 需要互联网连接，并且在 Telescopius 中必须至少存在一个目标列表。"
+        "connectionError": "与 Telescopius 的连接失败。NINA PC 需要互联网连接，并且在 Telescopius 中必须至少存在一个目标列表。",
+        "myLists": "我的目标列表",
+        "unnamedList": "未命名列表",
+        "showObjects": "显示天体",
+        "hideObjects": "隐藏天体",
+        "ra": "赤经",
+        "dec": "赤纬",
+        "size": "尺寸",
+        "magnitude": "星等"
+      },
+      "import": {
+        "title": "从 CSV 导入目标",
+        "button": "导入 CSV",
+        "description": "导入从 telescopius.com 导出的目标列表。无需 API 密钥。",
+        "landingTitle": "没有 API 密钥？导入 CSV",
+        "landingDescription": "在 telescopius.com 上将任意观测列表导出为 CSV 文件，然后在此导入。导入的目标可像通过 API 加载的目标一样用于构图、指向以及作为序列目标。",
+        "selectFile": "选择 CSV 文件",
+        "listName": "列表名称",
+        "targetsFound": "{count} 个目标",
+        "morePreview": "… 还有 {count} 个",
+        "import": "导入",
+        "cancel": "取消",
+        "remove": "删除列表",
+        "removeConfirm": "删除导入的列表“{name}”？",
+        "importedLists": "已导入的列表",
+        "formatHelp": {
+          "title": "支持的 CSV 格式",
+          "description": "直接支持 telescopius.com 的 CSV 导出。列通过表头名称识别，因此列顺序无关紧要，多余的列会被忽略。",
+          "columns": "必需：Right Ascension (j2000), Declination (j2000) — 可选：Catalogue Entry, Familiar Name, Type, Constellation, Magnitude, Size, Notes",
+          "note": "坐标按 J2000 读取，格式为 21h 38' 59\" / 57° 30' 50\"。逗号分隔和分号分隔的文件均受支持。"
+        },
+        "errors": {
+          "empty": "该文件不包含任何数据。",
+          "tooLarge": "文件过大（最大 2 MB）。",
+          "readFailed": "无法读取该文件。",
+          "missingColumns": "缺少必需的列：{columns}",
+          "noValidRows": "文件中未找到坐标有效的目标。",
+          "rowsSkipped": "已跳过 {count} 行，因为无法读取其坐标。",
+          "rowFailed": "第 {line} 行",
+          "saveFailed": "无法保存导入的列表。"
+        }
+      },
+      "edit": {
+        "edit": "编辑目标",
+        "name": "名称",
+        "ra": "赤经",
+        "dec": "赤纬",
+        "rotation": "旋转角度",
+        "rotationEmpty": "无",
+        "save": "保存",
+        "invalidCoordinates": "无法读取赤经或赤纬。",
+        "invalidRotation": "旋转角度必须是数字。",
+        "saveFailed": "无法保存更改。"
       }
     },
     "webcam": {
@@ -4439,7 +4520,6 @@
       "goUp": "Up",
       "refresh": "Refresh",
       "imagesOnly": "Images/FITS only",
-      "currentPath": "Current Path",
       "directoriesCount": "Directories: {count}",
       "filesCount": "Files: {count}",
       "newFolderPlaceholder": "New folder name",
@@ -4455,15 +4535,51 @@
       "modified": "Modified",
       "isImage": "Image/FITS",
       "selectEntryHint": "Select a file or directory to see details.",
-      "onHoldTitle": "On Hold",
-      "onHoldMessage": "Rename and file open actions are intentionally on hold for now.",
       "loadError": "Failed to load directory contents.",
       "createError": "Failed to create directory.",
       "deleteError": "Failed to delete entry.",
       "deleteDirectoryTitle": "Delete Directory",
       "deleteDirectoryMessage": "Delete directory \"{name}\" recursively?",
       "deleteFileTitle": "Delete File",
-      "deleteFileMessage": "Delete file \"{name}\"?"
+      "deleteFileMessage": "Delete file \"{name}\"?",
+      "searchPlaceholder": "在此文件夹中搜索…",
+      "noMatches": "没有符合筛选条件的条目。",
+      "sortBy": "排序方式",
+      "sortName": "名称",
+      "sortModified": "修改日期",
+      "sortSize": "大小",
+      "sortAsc": "升序",
+      "sortDesc": "降序",
+      "selectAll": "全选",
+      "clearSelection": "清除选择",
+      "selectedCount": "已选择 {count} 项",
+      "toggleSelection": "选择 {name}",
+      "renameError": "重命名失败。",
+      "renameEmptyName": "请输入名称。",
+      "deleteSelectedTitle": "删除所选",
+      "deleteSelectedMessage": "要删除 {count} 个条目吗？其中 {directories} 个是目录，将被递归删除。",
+      "download": {
+        "action": "保存到设备",
+        "progress": "{current}/{total}",
+        "doneTitle": "下载完成",
+        "doneMessage": "已将 {count} 个文件保存到设备。",
+        "failedTitle": "下载失败",
+        "failedMessage": "{failed} 个文件保存失败（{succeeded} 个成功）。{error}"
+      },
+      "fits": {
+        "debugTitle": "图像诊断",
+        "clipStrength": "黑场裁剪",
+        "stretchStrength": "拉伸系数",
+        "unlinked": "独立通道拉伸",
+        "debayer": "去拜耳",
+        "pattern": "拜耳阵列",
+        "none": "无",
+        "size": "尺寸",
+        "bitDepth": "位深",
+        "header": "头信息（主要关键字）",
+        "unsupportedFile": "此文件类型无法预览，将改为保存到设备。",
+        "previewFailed": "无法渲染预览。请使用下载按钮保存文件。"
+      }
     },
     "phd2logviewer": {
       "cal": {
@@ -4987,7 +5103,8 @@
       "tonightPicks": "今晚推荐",
       "topForWindow": "所选时间窗口的最佳目标",
       "preview": "预览",
-      "framing": "构图"
+      "framing": "构图",
+      "topFmt": "前 {n} 个"
     },
     "filters": {
       "title": "筛选",
@@ -5000,7 +5117,9 @@
       "objectType": "目标类型",
       "azSector": "天空方向（方位角扇区）",
       "onlyAboveHorizon": "仅 >0° 高度",
-      "limit": "限制"
+      "limit": "限制",
+      "countFmt": "{filtered} / {total} 个目标 · 显示：{shown}",
+      "moonIlluminatedFmt": "{pct}% 被照亮"
     },
     "sort": {
       "title": "排序",
@@ -5049,7 +5168,10 @@
       "altitudeVsTime": "高度 vs. 时间",
       "sampleMin": "采样（分钟）",
       "directionAz": "方向（方位角）",
-      "separation": "间距 —"
+      "separation": "间距 —",
+      "separationFmt": "间距 {deg}°",
+      "pointsFmt": "{n} 个点",
+      "visibleHoursFmt": "可见 {h} 小时"
     },
     "sectors": {
       "N_NE": "北 → 东北 (315°–45°)",
@@ -5066,7 +5188,9 @@
       "yes": "是",
       "no": "否",
       "loading": "加载中…",
-      "all": "全部"
+      "all": "全部",
+      "unnamedTarget": "未命名目标",
+      "reset": "重置"
     },
     "tooltips": {
       "favorite": "收藏",
@@ -5091,6 +5215,13 @@
     "errors": {
       "noSequenceAvailable": "无可用序列，请先加载序列",
       "sequencerFailed": "序列器失败"
+    },
+    "score": {
+      "excellent": "🔥 极佳",
+      "veryGood": "⭐ 很好",
+      "good": "👍 良好",
+      "difficult": "⚠️ 困难",
+      "skip": "❌ 跳过"
     }
   },
   "indi": {
@@ -5317,7 +5448,15 @@
       "risesAt": "升起 {time}",
       "setsAt": "落下 {time}",
       "circumpolar": "拱极星 — 永不落下",
-      "doesNotRise": "今晚不升起"
+      "doesNotRise": "今晚不升起",
+      "rate": "速率（赤经/赤纬）",
+      "maxExposure": "最大曝光",
+      "maxExposureTitle": "什么是最大曝光？",
+      "maxExposureTooltip": "最大曝光是什么意思？",
+      "maxExposureExplanation": "彗星相对于背景恒星在移动。Quick Track 让赤道仪按彗星自身的速率跟踪，因此在每张子曝光中漂移的是恒星而不是彗星——一旦这种漂移超过约1个像素，恒星就会开始拉长，叠加后表现为略呈椭圆形的恒星和更柔和的细节。此数值就是达到这1像素漂移所对应的曝光时长，基于彗星的真实角速率和你相机的像元比例（像元尺寸和焦距）计算得出。",
+      "maxExposureCaveat": "这只是一个跟踪上限——它不了解天空背景、光污染或滤镜情况。在较亮的地点使用宽带（UV/IR-cut）滤镜时，天光通常会在达到这个数值之前就先限制了实际单张曝光时长。",
+      "rateUnavailable": "在此配置文件中设置相机像元尺寸和望远镜焦距以查看最大曝光。",
+      "rateError": "无法加载跟踪速率：{error}"
     },
     "track": {
       "step": "跟踪它",

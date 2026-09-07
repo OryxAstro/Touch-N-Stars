@@ -10,9 +10,9 @@
          (see logfile-collector.vue/nightsummary.vue for the precedent). -->
     <div v-if="pluginInstalled === false" class="p-4">
       <div class="tns-card text-center">
-        <p v-if="!store.isPINS" class="text-sm text-content-faint">{{
-          t('perihelion.notSupportedOnNina')
-        }}</p>
+        <p v-if="!store.isPINS" class="text-sm text-content-faint">
+          {{ t('perihelion.notSupportedOnNina') }}
+        </p>
         <p v-else class="text-sm text-content-faint">{{ t('perihelion.notDetected') }}</p>
       </div>
     </div>
@@ -121,7 +121,11 @@
               :disabled="refreshingCobs"
               @click="onRefreshCobs"
             >
-              {{ refreshingCobs ? t('perihelion.browse.refreshingCobs') : t('perihelion.browse.refreshCobs') }}
+              {{
+                refreshingCobs
+                  ? t('perihelion.browse.refreshingCobs')
+                  : t('perihelion.browse.refreshCobs')
+              }}
             </button>
             <button
               class="shrink-0 px-2 py-1 rounded-chip font-semibold text-accent border border-accent/30 hover:bg-accent/10 disabled:opacity-50 cursor-pointer"
@@ -251,40 +255,91 @@
               </div>
             </div>
 
+            <!-- Promoted out of "More Details" and always visible, 2026-09-06 (real user
+                 feedback: Alt, Rate and Max Exposure are actionable "should I image this right
+                 now / for how long" facts, not occasional reference lookups like Sun/Earth
+                 distance or constellation below -- worth the extra screen space). Az rides along
+                 with Alt since they're the same fetch and a natural pair; Rate rides along with
+                 Max Exposure for the same reason (and because seeing the raw rate next to the
+                 derived ceiling makes where that number came from legible). -->
+            <div v-if="hasLocation" class="grid grid-cols-2 gap-2">
+              <div class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5">
+                <span class="tns-stat-label">{{ t('perihelion.position.alt') }}</span>
+                <span class="text-[15px] font-bold tabular-nums text-content">{{
+                  altAz ? `${altAz.altitude.toFixed(0)}°` : '—'
+                }}</span>
+              </div>
+              <div class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5">
+                <span class="tns-stat-label">{{ t('perihelion.position.az') }}</span>
+                <span class="text-[15px] font-bold tabular-nums text-content">{{
+                  altAz ? `${altAz.azimuth.toFixed(0)}°` : '—'
+                }}</span>
+              </div>
+            </div>
+            <!-- Rate/max exposure, from GET /objects/rate (loadRate()). -->
+            <div v-if="rate" class="grid grid-cols-2 gap-2">
+              <div class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5">
+                <span class="tns-stat-label flex items-center gap-1">
+                  {{ t('perihelion.position.maxExposure') }}
+                  <!-- Real user question, 2026-09-06, after seeing a much bigger number than
+                       they'd actually shoot (617s for a Bortle 6 site with a broadband UV/IR-cut
+                       filter): Max Exposure is a TRACKING ceiling only -- no idea about sky
+                       background, light pollution, or the filter, so it's very often NOT the
+                       real limit on sub length. Modal, not a tooltip or inline caveat text -- a
+                       native title tooltip doesn't work on touch, matching the InformationCircleIcon
+                       + Modal pattern already used above for observedTooltip. -->
+                  <button
+                    class="text-content-faint hover:text-content-muted shrink-0"
+                    :aria-label="t('perihelion.position.maxExposureTooltip')"
+                    @click="showMaxExposureLegend = true"
+                  >
+                    <InformationCircleIcon class="w-3.5 h-3.5" />
+                  </button>
+                </span>
+                <span class="text-[15px] font-bold tabular-nums text-content">{{
+                  rate.maxExposureSeconds != null ? `${rate.maxExposureSeconds.toFixed(1)} s` : '—'
+                }}</span>
+              </div>
+              <div class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5">
+                <span class="tns-stat-label">{{ t('perihelion.position.rate') }}</span>
+                <span class="text-[13px] font-bold tabular-nums text-content"
+                  >{{ rate.raArcsecPerSec.toFixed(4) }}″/s /
+                  {{ rate.decArcsecPerSec.toFixed(4) }}″/s</span
+                >
+              </div>
+            </div>
+            <p
+              v-if="rate && rate.maxExposureSeconds == null"
+              class="text-[11px] text-content-faint px-1"
+            >
+              {{ t('perihelion.position.rateUnavailable') }}
+            </p>
+            <!-- Distinct from rateUnavailable above -- that's an expected, informational state
+                 (camera/telescope not configured); this is an actual fetch failure, so it needs
+                 its own visible line rather than just letting the whole rate block disappear
+                 indistinguishably from "still loading". -->
+            <p v-if="!rate && rateError" class="text-xs text-status-warn px-1">
+              {{ t('perihelion.position.rateError', { error: rateError }) }}
+            </p>
+
             <!-- Real, if lower-priority, facts a user might want alongside the above -- collapsed
                  by default so they don't add permanent scroll weight to an already-busy tab.
-                 Alt/Az needs a real site (hasLocation); Sun/Earth distance, solar elongation and
-                 constellation are free from the object's own already-computed geocentric
-                 position (see OrbitalTracking.BrowseObject's own comments), so those always show
-                 regardless of location. Perihelion date is comet-only. -->
+                 Sun/Earth distance, solar elongation and constellation are free from the object's
+                 own already-computed geocentric position (see OrbitalTracking.BrowseObject's own
+                 comments), so those always show regardless of location. Perihelion date is
+                 comet-only. -->
             <div class="rounded-chip bg-surface-2/60 border border-line-strong/50 overflow-hidden">
               <button
                 class="flex items-center gap-2 w-full px-3 py-2 text-left cursor-pointer"
                 @click="showMoreDetails = !showMoreDetails"
               >
-                <span class="tns-stat-label flex-1">{{ t('perihelion.position.moreDetails') }}</span>
+                <span class="tns-stat-label flex-1">{{
+                  t('perihelion.position.moreDetails')
+                }}</span>
                 <ChevronUpIcon v-if="showMoreDetails" class="w-4 h-4 shrink-0 text-content-faint" />
                 <ChevronDownIcon v-else class="w-4 h-4 shrink-0 text-content-faint" />
               </button>
               <div v-if="showMoreDetails" class="p-3 pt-0 flex flex-col gap-2">
-                <div v-if="hasLocation" class="grid grid-cols-2 gap-2">
-                  <div
-                    class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5"
-                  >
-                    <span class="tns-stat-label">{{ t('perihelion.position.alt') }}</span>
-                    <span class="text-[15px] font-bold tabular-nums text-content">{{
-                      altAz ? `${altAz.altitude.toFixed(0)}°` : '—'
-                    }}</span>
-                  </div>
-                  <div
-                    class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5"
-                  >
-                    <span class="tns-stat-label">{{ t('perihelion.position.az') }}</span>
-                    <span class="text-[15px] font-bold tabular-nums text-content">{{
-                      altAz ? `${altAz.azimuth.toFixed(0)}°` : '—'
-                    }}</span>
-                  </div>
-                </div>
                 <div class="grid grid-cols-3 gap-2">
                   <div
                     class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5"
@@ -297,9 +352,7 @@
                   <div
                     class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5"
                   >
-                    <span class="tns-stat-label">{{
-                      t('perihelion.position.earthDistance')
-                    }}</span>
+                    <span class="tns-stat-label">{{ t('perihelion.position.earthDistance') }}</span>
                     <span class="text-[15px] font-bold tabular-nums text-content"
                       >{{ selected.earthDistanceAu.toFixed(2) }} au</span
                     >
@@ -362,7 +415,9 @@
                 >
                 <span
                   class="text-xs font-bold tabular-nums"
-                  :class="magDiffTextClass(selected.magnitude, cometActivity.recentAverageMagnitude)"
+                  :class="
+                    magDiffTextClass(selected.magnitude, cometActivity.recentAverageMagnitude)
+                  "
                   >{{
                     t('perihelion.position.observedAverage', {
                       mag: cometActivity.recentAverageMagnitude.toFixed(1),
@@ -418,16 +473,21 @@
                 <p v-if="!hasLocation" class="text-xs text-content-faint">
                   {{ t('perihelion.position.noLocation') }}
                 </p>
+                <!-- Night-centering and the moon overlay are now built into SkyChart itself
+                     (upstream's own skychart-midnight-and-moon work) -- no props needed here
+                     anymore. Tonight's Peak Altitude and Rise/Set below are computed
+                     independently in this view (see updatePositionDerivedState), not from
+                     SkyChart emits: that rewrite removed SkyChart's derived-value emits
+                     entirely in favor of callers computing what they need directly from the
+                     shared astronomy.js primitives (the same pattern observationplaner already
+                     uses) -- see this repo's PR description for the fuller reasoning. -->
                 <SkyChart
                   v-else
-                  center-on-night
                   :target="{ RA: selected.raHours * 15, Dec: selected.decDeg }"
                   :coordinates="{
                     latitude: store.profileInfo.AstrometrySettings.Latitude,
                     longitude: store.profileInfo.AstrometrySettings.Longitude,
                   }"
-                  @peak-altitude="tonightsPeakAltitude = $event"
-                  @rise-set="riseSetInfo = $event"
                 />
                 <p v-if="riseSetLabel" class="text-[11px] text-content-faint mt-2">
                   {{ riseSetLabel }}
@@ -690,7 +750,10 @@
                    the mode selector above already establishes that this warning is scoped to
                    Quick Track, since it only renders while that mode is selected. -->
               <div
-                v-if="actionMode === 'quick' && ((altAz && altAz.altitude < 0) || isCurrentlyDark === false)"
+                v-if="
+                  actionMode === 'quick' &&
+                  ((altAz && altAz.altitude < 0) || isCurrentlyDark === false)
+                "
                 class="flex items-start gap-2 p-2.5 rounded-chip bg-status-warn/5 border border-status-warn/20"
               >
                 <ExclamationTriangleIcon class="w-4 h-4 text-status-warn shrink-0 mt-0.5" />
@@ -870,9 +933,7 @@
                   @click="onAddToSequence"
                 >
                   {{
-                    actionBusy
-                      ? t('perihelion.track.working')
-                      : t('perihelion.track.addToSequence')
+                    actionBusy ? t('perihelion.track.working') : t('perihelion.track.addToSequence')
                   }}
                 </button>
                 <button
@@ -1010,19 +1071,13 @@
                       }}
                     </p>
                     <div class="flex flex-col gap-2">
-                      <button
-                        class="tns-btn-primary"
-                        @click="onMountMismatchSlewThenTrack"
-                      >
+                      <button class="tns-btn-primary" @click="onMountMismatchSlewThenTrack">
                         {{ t('perihelion.track.slewThenTrack') }}
                       </button>
                       <button class="tns-btn-secondary" @click="onMountMismatchContinueAnyway">
                         {{ t('perihelion.track.continueAnyway') }}
                       </button>
-                      <button
-                        class="tns-btn-secondary"
-                        @click="showMountMismatchModal = false"
-                      >
+                      <button class="tns-btn-secondary" @click="showMountMismatchModal = false">
                         {{ t('common.cancel') }}
                       </button>
                     </div>
@@ -1033,13 +1088,18 @@
                    Details card. This used to be four always-visible paragraphs permanently
                    taking up space at the bottom of the tab; real feedback was that it read as
                    clutter for anyone past their first few uses. -->
-              <div class="rounded-chip bg-surface-2/60 border border-line-strong/50 overflow-hidden">
+              <div
+                class="rounded-chip bg-surface-2/60 border border-line-strong/50 overflow-hidden"
+              >
                 <button
                   class="flex items-center gap-2 w-full px-3 py-2 text-left cursor-pointer"
                   @click="showHowItWorks = !showHowItWorks"
                 >
                   <span class="tns-stat-label flex-1">{{ t('perihelion.track.howItWorks') }}</span>
-                  <ChevronUpIcon v-if="showHowItWorks" class="w-4 h-4 shrink-0 text-content-faint" />
+                  <ChevronUpIcon
+                    v-if="showHowItWorks"
+                    class="w-4 h-4 shrink-0 text-content-faint"
+                  />
                   <ChevronDownIcon v-else class="w-4 h-4 shrink-0 text-content-faint" />
                 </button>
                 <div v-if="showHowItWorks" class="p-3 pt-0 flex flex-col gap-2">
@@ -1120,6 +1180,22 @@
           </div>
         </template>
       </Modal>
+
+      <Modal
+        :show="showMaxExposureLegend"
+        @close="showMaxExposureLegend = false"
+        :zIndex="'z-[60]'"
+      >
+        <template #header>
+          <h2 class="text-xl font-bold">{{ t('perihelion.position.maxExposureTitle') }}</h2>
+        </template>
+        <template #body>
+          <div class="space-y-3 text-sm">
+            <p>{{ t('perihelion.position.maxExposureExplanation') }}</p>
+            <p class="text-content-muted">{{ t('perihelion.position.maxExposureCaveat') }}</p>
+          </div>
+        </template>
+      </Modal>
     </template>
   </div>
 </template>
@@ -1131,10 +1207,12 @@ import { storeToRefs } from 'pinia';
 import SubNav from '@/components/SubNav.vue';
 import { apiStore } from '@/store/store';
 import apiService from '@/services/apiService';
-import { raDecToAltAz, wait, calculateSunAltitude } from '@/utils/utils';
+import { raDecToAltAz, wait } from '@/utils/utils';
 import { timeSync } from '@/utils/timeSync';
+import { equatorialToAltAz, getSunAltitudeDeg, angularSeparationDeg } from '@/utils/astronomy';
 import { fetchBrowseObjects, refreshCobs } from '../utils/fetchBrowseObjects';
 import { fetchPath } from '../utils/fetchPath';
+import { fetchRate } from '../utils/fetchRate';
 import { fetchSyncStatus, syncComets } from '../utils/syncComets';
 import { fetchCometActivity } from '../utils/fetchCometActivity';
 import { sendPerihelionSequence } from '../utils/sendPerihelionSequence';
@@ -1415,8 +1493,8 @@ onMounted(async () => {
     loadSyncStatus();
     await restoreActiveQuickTrackSession();
   }
-  updateIsCurrentlyDark();
-  darknessCheckHandle = setInterval(updateIsCurrentlyDark, 60000);
+  updatePositionDerivedState();
+  positionDerivedStateHandle = setInterval(updatePositionDerivedState, 60000);
 });
 
 const syncStatusLabel = computed(() =>
@@ -1475,6 +1553,7 @@ async function onRefreshCobs() {
 // than the same quiet accent used when the two roughly agree, so a genuinely surprising comet
 // stands out in the list without needing to open it first.
 const showObservedMagLegend = ref(false);
+const showMaxExposureLegend = ref(false);
 
 // Collapsed by default -- Alt/Az, Sun/Earth distance, elongation, constellation, and perihelion
 // date are real facts someone might want, but stacking them onto an already-busy tab as
@@ -1536,18 +1615,6 @@ function altitudeColorClass(altitudeDeg) {
   if (altitudeDeg < 15) return TEXT_CLASS_BY_TIER.danger;
   if (altitudeDeg < 30) return TEXT_CLASS_BY_TIER.warn;
   return TEXT_CLASS_BY_TIER.ok;
-}
-
-// Standard spherical law of cosines -- great-circle angular separation in degrees between two
-// RA/Dec points (both in degrees here; callers convert hours*15 themselves).
-function angularSeparationDeg(ra1Deg, dec1Deg, ra2Deg, dec2Deg) {
-  const rad = Math.PI / 180;
-  const d1 = dec1Deg * rad;
-  const d2 = dec2Deg * rad;
-  const dRa = (ra1Deg - ra2Deg) * rad;
-  let cosSep = Math.sin(d1) * Math.sin(d2) + Math.cos(d1) * Math.cos(d2) * Math.cos(dRa);
-  cosSep = Math.max(-1, Math.min(1, cosSep));
-  return Math.acos(cosSep) / rad;
 }
 
 // Real gap: Quick Track just applies a tracking RATE, it never slews -- if the mount is actually
@@ -1645,27 +1712,112 @@ const altAz = computed(() => {
   return raDecToAltAz(selected.value.raHours * 15, selected.value.decDeg, s.Latitude, s.Longitude);
 });
 // Whether it's currently astronomically dark (sun below -18deg) at the configured site --
-// deliberately its own independent, always-running check rather than reusing SkyChart's own
-// darkness-changed emit, since that component only exists while the Position & Path tab is
-// mounted (v-if/v-else-if between tabs) and would go stale the moment the user switches to
-// Track for a long Quick Track session. null until the first tick or if location is unknown.
+// its own independent, always-running check rather than depending on SkyChart, since that
+// component only exists while the Position & Path tab is mounted (v-if/v-else-if between tabs)
+// and would go stale the moment the user switches to Track for a long Quick Track session.
+// null until the first tick or if location is unknown.
 const isCurrentlyDark = ref(null);
-let darknessCheckHandle = null;
-function updateIsCurrentlyDark() {
+// { altitude, label } | null -- "currently low" and "climbing to a good altitude tonight"
+// aren't indistinguishable in the same red/amber badge without this.
+const tonightsPeakAltitude = ref(null);
+// { circumpolar, neverRises, rise, set } | null.
+const riseSetInfo = ref(null);
+let positionDerivedStateHandle = null;
+
+// Real observatory apps (and SkyChart's own pre-rewrite peakAltitudePoint/riseSetPoint, which
+// this ports from -- see PR description for why SkyChart itself no longer exposes these as
+// emits) need a rolling 24h-from-now window here, not the chart's own fixed display range: a
+// window anchored to a fixed clock time can straddle last night's already-over dark period, or
+// fail to reach deep enough into the coming night depending what time of day "now" happens to
+// be, and either way ends up reporting a peak/rise-set that isn't actually the next real one.
+const SEARCH_STEPS = 96; // 24h from now, in 15-minute steps
+const SEARCH_STEP_MS = 15 * 60 * 1000;
+
+function timeLabel(date) {
+  return `${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`;
+}
+
+// Constrained to astronomical night (sun below -18deg) and genuinely above the horizon -- a
+// "peak" reached at noon isn't reachable at all. Returns null if nothing in the window
+// qualifies (never rises during any dark period in range, or there's no astronomical night at
+// all in this +/-24h span, e.g. far-north summer).
+function computeTonightsPeak(now, raDeg, decDeg, latDeg, lonDeg) {
+  let best = null;
+  for (let i = 0; i <= SEARCH_STEPS; i++) {
+    const time = new Date(now.getTime() + i * SEARCH_STEP_MS);
+    if (getSunAltitudeDeg(time, latDeg, lonDeg) >= -18) continue;
+    const altDeg = equatorialToAltAz(raDeg, decDeg, time, latDeg, lonDeg).altDeg;
+    if (altDeg < 0) continue;
+    if (!best || altDeg > best.altitude) {
+      best = { altitude: altDeg, label: timeLabel(time) };
+    }
+  }
+  return best;
+}
+
+// Circumpolar/never-rises are reported explicitly rather than as null rise+set, since "no
+// crossing found" is ambiguous between those two very different cases otherwise.
+// Already-above-horizon deliberately doesn't look for the rise that already happened -- only
+// the next set -- rather than chasing a second rise later in the same 24h window, which would
+// be more than a simple status line needs.
+function computeRiseSet(now, raDeg, decDeg, latDeg, lonDeg) {
+  function altAt(i) {
+    const time = new Date(now.getTime() + i * SEARCH_STEP_MS);
+    return equatorialToAltAz(raDeg, decDeg, time, latDeg, lonDeg).altDeg;
+  }
+  function labelAt(fractionalStep) {
+    return timeLabel(new Date(now.getTime() + fractionalStep * SEARCH_STEP_MS));
+  }
+
+  const alts = [];
+  for (let i = 0; i <= SEARCH_STEPS; i++) alts.push(altAt(i));
+
+  if (alts.every((a) => a >= 0))
+    return { circumpolar: true, neverRises: false, rise: null, set: null };
+  if (alts.every((a) => a < 0))
+    return { circumpolar: false, neverRises: true, rise: null, set: null };
+
+  const alreadyUp = alts[0] >= 0;
+  let rise = null;
+  let set = null;
+  for (let i = 1; i <= SEARCH_STEPS; i++) {
+    const prev = alts[i - 1];
+    const curr = alts[i];
+    if (!alreadyUp && rise == null && prev < 0 && curr >= 0) {
+      // Linear-interpolate the actual crossing point between these two samples, rather than
+      // just labeling whichever 15-minute sample happened to land on the right side of zero.
+      const frac = -prev / (curr - prev);
+      rise = labelAt(i - 1 + frac);
+    }
+    if ((alreadyUp || rise != null) && set == null && prev >= 0 && curr < 0) {
+      const frac = prev / (prev - curr);
+      set = labelAt(i - 1 + frac);
+    }
+    if (set != null && (alreadyUp || rise != null)) break;
+  }
+  return { circumpolar: false, neverRises: false, rise, set };
+}
+
+function updatePositionDerivedState() {
   if (!hasLocation.value) {
     isCurrentlyDark.value = null;
+    tonightsPeakAltitude.value = null;
+    riseSetInfo.value = null;
     return;
   }
   const s = store.profileInfo.AstrometrySettings;
   const now = new Date(timeSync.getServerTime());
-  isCurrentlyDark.value = calculateSunAltitude(s.Latitude, s.Longitude, now) < -18;
+  isCurrentlyDark.value = getSunAltitudeDeg(now, s.Latitude, s.Longitude) < -18;
+  if (!selected.value) {
+    tonightsPeakAltitude.value = null;
+    riseSetInfo.value = null;
+    return;
+  }
+  const raDeg = selected.value.raHours * 15;
+  const decDeg = selected.value.decDeg;
+  tonightsPeakAltitude.value = computeTonightsPeak(now, raDeg, decDeg, s.Latitude, s.Longitude);
+  riseSetInfo.value = computeRiseSet(now, raDeg, decDeg, s.Latitude, s.Longitude);
 }
-
-// { altitude, label } | null -- from SkyChart's own peak-altitude emit, so "currently low" and
-// "climbing to a good altitude tonight" aren't indistinguishable in the same red/amber badge.
-const tonightsPeakAltitude = ref(null);
-// { circumpolar, neverRises, rise, set } | null -- from SkyChart's own rise-set emit.
-const riseSetInfo = ref(null);
 // A single combined string, not several adjacent template <span>s -- Vue's whitespace-condense
 // mode collapses whitespace-only text nodes BETWEEN elements (same real bug already found and
 // fixed once this session in the Quick Track status card's "Tracking for X· Applied Y ago ago"),
@@ -1736,8 +1888,35 @@ async function loadCometActivity() {
     cometActivity.value = null;
   }
 }
+// --- Rate / max exposure -- same request-id guard as loadCometActivity above, for the same
+// reason (switching comets or leaving/re-entering this tab before an in-flight fetch resolves).
+const rate = ref(null);
+const rateError = ref(null);
+let rateRequestId = 0;
+async function loadRate() {
+  if (!selected.value) {
+    rate.value = null;
+    return;
+  }
+  const requestId = ++rateRequestId;
+  rateError.value = null;
+  try {
+    const result = await fetchRate({
+      objectType: selected.value.objectType,
+      targetName: selected.value.name,
+    });
+    if (requestId !== rateRequestId) return; // a newer request has since started
+    rate.value = result;
+  } catch (error) {
+    if (requestId !== rateRequestId) return;
+    rate.value = null;
+    rateError.value = error?.response?.data?.Message ?? error?.message ?? 'Could not load rate';
+  }
+}
 watch([activeTab, selected], ([tab]) => {
-  if (tab === 'position' && selected.value) loadCometActivity();
+  if (tab !== 'position' || !selected.value) return;
+  loadCometActivity();
+  loadRate();
 });
 
 // --- Framing offset -- see FramingOffsetView.vue's own doc comment for the mechanism.
@@ -1758,11 +1937,10 @@ watch(selected, (newVal, oldVal) => {
   if (oldVal && newVal && oldVal.id !== newVal.id) {
     framingOffset.value = null;
     showFramingCapturedPrompt.value = false;
-    // SkyChart's own peak-altitude/rise-set emits are both target-identity-aware (see their own
-    // dedup-guard comments), so they always re-emit on a genuine object switch -- these resets
-    // just avoid a stale flash of the previous object's values in the gap before that lands.
-    tonightsPeakAltitude.value = null;
-    riseSetInfo.value = null;
+    // Recompute immediately for the new object rather than resetting to null and waiting for
+    // the next periodic tick (up to 60s) -- there's no external emit to wait on any more, this
+    // view already has everything it needs to do it synchronously right here.
+    updatePositionDerivedState();
   }
 });
 
@@ -1843,7 +2021,7 @@ watch(
 );
 onUnmounted(() => {
   if (statusPollHandle) clearInterval(statusPollHandle);
-  if (darknessCheckHandle) clearInterval(darknessCheckHandle);
+  if (positionDerivedStateHandle) clearInterval(positionDerivedStateHandle);
 });
 
 /** Coarse duration ("3m", "1h 05m") without a directional suffix -- caller supplies "for"/"in ~". */

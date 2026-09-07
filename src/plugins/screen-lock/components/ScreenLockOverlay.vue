@@ -24,6 +24,7 @@
         ref="unlockButtonRef"
         type="button"
         class="unlock-button min-h-touch min-w-touch relative flex items-center justify-center rounded-full border border-line-strong bg-surface-1/90 text-content shadow-lg"
+        data-haptic="none"
         :aria-label="t('plugins.screenLock.unlock')"
         @pointerdown.stop="startPointerHold"
         @keydown.enter.prevent="startKeyHold"
@@ -205,6 +206,7 @@ onBeforeUnmount(async () => {
   /* Swallows scroll, pinch zoom and drag gestures rather than passing them on. */
   touch-action: none;
   overscroll-behavior: contain;
+  -webkit-touch-callout: none;
 }
 
 /* Floats just above the status bar (incl. safe area and any open status panel),
@@ -228,6 +230,7 @@ onBeforeUnmount(async () => {
   width: var(--spacing-touch);
   height: var(--spacing-touch);
   touch-action: none;
+  -webkit-touch-callout: none;
 }
 
 .hint-enter-active,

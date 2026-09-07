@@ -140,6 +140,16 @@
       "confirmSetTargetMessage": "Ви впевнені, що хочете встановити цю ціль як ціль послідовності?",
       "useNinaCache": "Використовувати кеш NINA для зображення цілі",
       "setSequnceTarget": "встановити як ціль послідовності",
+      "sequenceTargetPicker": {
+        "title": "Ціль послідовності",
+        "hint": "Виберіть ціль із завантаженої послідовності, яка отримає координати фреймінгу.",
+        "newTarget": "Нова ціль",
+        "unnamed": "Ціль {index}",
+        "position": "Місце вставки",
+        "positionEnd": "В кінці",
+        "positionAfter": "Після {name}",
+        "addFailed": "Не вдалося додати нову ціль до послідовності"
+      },
       "search": {
         "title": "Пошук",
         "placeholder": "Введіть пошуковий запит...",
@@ -169,7 +179,11 @@
         "altitude": "Висота (°)",
         "horizonProfile": "Профіль горизонту",
         "twilight": "Сутінки",
-        "astronomicalNight": "Астрономічна ніч"
+        "astronomicalNight": "Астрономічна ніч",
+        "moon": "Місяць",
+        "toggleMoon": "Показати Місяць",
+        "moonIlluminationFmt": "{pct} % освітлення",
+        "moonSeparationFmt": "{deg}° від цілі"
       },
       "mosaic": {
         "title": "Режим мозаїки",
@@ -184,7 +198,11 @@
         "panelsSet": "панелі встановлені в послідовності",
         "willBeSaved": "панелі будуть збережені окремо"
       },
-      "customTarget": "Спеціальна ціль"
+      "customTarget": "Спеціальна ціль",
+      "solvedRotation": {
+        "short": "розвʼязано",
+        "tooltip": "Поворот камери з останнього успішного plate solve"
+      }
     },
     "tutorial": {
       "previous": "Назад",
@@ -506,6 +524,10 @@
         "title": "Оптимізація введення",
         "touchOptimized": "Сенсорний вибір"
       },
+      "haptics": {
+        "title": "Тактильний відгук",
+        "description": "Коротка вібрація під час натискання кнопок"
+      },
       "beta": {
         "title": "Канал бета-оновлень"
       },
@@ -567,6 +589,7 @@
         "astapDatabaseInstallFailed": "Помилка встановлення бази даних ASTAP star{exitCode}.",
         "astapDatabaseInstallSuccess": "Базу даних зірки ASTAP {databaseId} успішно встановлено.",
         "astapDatabaseInstalling": "Встановлення...",
+        "astapDatabaseProgressStalled": "Завантаження не просувається протягом 30 секунд. Завдання й надалі відстежується.",
         "astapDatabaseJobStarted": "почався",
         "astapDatabaseJobStartedMessage": "Розпочато встановлення для {databaseId}.",
         "astapDatabaseJobStatus": "Вакансія {jobId}: {status}",
@@ -1107,7 +1130,8 @@
         "dso": {
           "targetName": "Назва цілі",
           "positionAngle": "Позиційний кут (°)",
-          "loadFromFavorites": "Завантажити з обраного"
+          "loadFromFavorites": "Завантажити з обраного",
+          "loadIntoFraming": "Завантажити в Асистент фреймінгу"
         },
         "warmCamera": {
           "duration": "Тривалість (хв)"
@@ -1888,7 +1912,8 @@
       },
       "indi": {
         "settings": "Налаштування ротатора"
-      }
+      },
+      "solvedPositionAngle": "Розвʼязаний кут на небі"
     },
     "flat": {
       "please_connect_flatDevice": "Будь ласка, підключіть пристрій для флетів",
@@ -2119,7 +2144,11 @@
       "enter_name": "Введіть назву",
       "no_fav": "Немає збережених обраних",
       "titel": "Обране",
-      "save_to_favorites": "Зберегти до обраних цілей"
+      "save_to_favorites": "Зберегти до обраних цілей",
+      "groups": {
+        "favorites": "Обране",
+        "telescopius": "Telescopius"
+      }
     },
     "helpers": {
       "imageModal": {
@@ -2264,7 +2293,7 @@
       "initializing": "Ініціалізація...",
       "outdated": {
         "title": "Плагін застарілий",
-        "message": "Плагін TouchNStars у NINA застарілий і потребує оновлення.",
+        "message": "Плагін TouchNStars у {host} застарілий і потребує оновлення.",
         "required": "Необхідна версія",
         "current": "Поточна версія"
       }
@@ -2567,7 +2596,59 @@
         "noListsHint": "Створіть списки цілей на telescopius.com, а потім перезавантажте їх тут.",
         "editOnTelescopius": "Редагувати списки на Telescopius",
         "dataFrom": "Дані з",
-        "connectionError": "З'єднання з Telescopius не вдалося. ПК з NINA повинен мати з'єднання з інтернетом, і в Telescopius має існувати хоча б один список цілей."
+        "connectionError": "З'єднання з Telescopius не вдалося. ПК з NINA повинен мати з'єднання з інтернетом, і в Telescopius має існувати хоча б один список цілей.",
+        "myLists": "Мої списки цілей",
+        "unnamedList": "Список без назви",
+        "showObjects": "Показати об'єкти",
+        "hideObjects": "Сховати об'єкти",
+        "ra": "RA",
+        "dec": "DEC",
+        "size": "Розмір",
+        "magnitude": "Зор. вел."
+      },
+      "import": {
+        "title": "Імпорт цілей із CSV",
+        "button": "Імпортувати CSV",
+        "description": "Імпортуйте список цілей, експортований з telescopius.com. Ключ API для цього не потрібен.",
+        "landingTitle": "Немає ключа API? Імпортуйте CSV",
+        "landingDescription": "Експортуйте будь-який список спостережень на telescopius.com у файл CSV і імпортуйте його сюди. Імпортовані цілі можна використовувати для кадрування, наведення та як ціль послідовності так само, як завантажені через API.",
+        "selectFile": "Вибрати файл CSV",
+        "listName": "Назва списку",
+        "targetsFound": "Цілей: {count}",
+        "morePreview": "… і ще {count}",
+        "import": "Імпортувати",
+        "cancel": "Скасувати",
+        "remove": "Видалити список",
+        "removeConfirm": "Видалити імпортований список «{name}»?",
+        "importedLists": "Імпортовані списки",
+        "formatHelp": {
+          "title": "Підтримуваний формат CSV",
+          "description": "Експорт CSV з telescopius.com підтримується безпосередньо. Стовпці розпізнаються за заголовками, тому їхній порядок не має значення, а зайві стовпці ігноруються.",
+          "columns": "Обов'язково: Right Ascension (j2000), Declination (j2000) — Необов'язково: Catalogue Entry, Familiar Name, Type, Constellation, Magnitude, Size, Notes",
+          "note": "Координати читаються як J2000 у форматі 21h 38' 59\" / 57° 30' 50\". Підтримуються файли з роздільником комою та крапкою з комою."
+        },
+        "errors": {
+          "empty": "Файл не містить даних.",
+          "tooLarge": "Файл завеликий (макс. 2 МБ).",
+          "readFailed": "Не вдалося прочитати файл.",
+          "missingColumns": "Бракує обов'язкових стовпців: {columns}",
+          "noValidRows": "У файлі не знайдено жодної цілі з дійсними координатами.",
+          "rowsSkipped": "Пропущено {count} рядків, бо їхні координати не вдалося прочитати.",
+          "rowFailed": "Рядок {line}",
+          "saveFailed": "Не вдалося зберегти імпортований список."
+        }
+      },
+      "edit": {
+        "edit": "Редагувати ціль",
+        "name": "Назва",
+        "ra": "Пряме сходження",
+        "dec": "Схилення",
+        "rotation": "Поворот",
+        "rotationEmpty": "немає",
+        "save": "Зберегти",
+        "invalidCoordinates": "Не вдалося прочитати пряме сходження або схилення.",
+        "invalidRotation": "Поворот має бути числом.",
+        "saveFailed": "Не вдалося зберегти зміну."
       }
     },
     "webcam": {
@@ -2607,7 +2688,6 @@
       "goUp": "Up",
       "refresh": "Refresh",
       "imagesOnly": "Images/FITS only",
-      "currentPath": "Current Path",
       "directoriesCount": "Directories: {count}",
       "filesCount": "Files: {count}",
       "newFolderPlaceholder": "New folder name",
@@ -2623,15 +2703,51 @@
       "modified": "Modified",
       "isImage": "Image/FITS",
       "selectEntryHint": "Select a file or directory to see details.",
-      "onHoldTitle": "On Hold",
-      "onHoldMessage": "Rename and file open actions are intentionally on hold for now.",
       "loadError": "Failed to load directory contents.",
       "createError": "Failed to create directory.",
       "deleteError": "Failed to delete entry.",
       "deleteDirectoryTitle": "Delete Directory",
       "deleteDirectoryMessage": "Delete directory \"{name}\" recursively?",
       "deleteFileTitle": "Delete File",
-      "deleteFileMessage": "Delete file \"{name}\"?"
+      "deleteFileMessage": "Delete file \"{name}\"?",
+      "searchPlaceholder": "Пошук у цій теці…",
+      "noMatches": "Жоден запис не відповідає фільтру.",
+      "sortBy": "Сортувати за",
+      "sortName": "Назвою",
+      "sortModified": "Датою зміни",
+      "sortSize": "Розміром",
+      "sortAsc": "За зростанням",
+      "sortDesc": "За спаданням",
+      "selectAll": "Вибрати все",
+      "clearSelection": "Зняти вибір",
+      "selectedCount": "Вибрано: {count}",
+      "toggleSelection": "Вибрати {name}",
+      "renameError": "Не вдалося перейменувати.",
+      "renameEmptyName": "Введіть назву.",
+      "deleteSelectedTitle": "Видалити вибране",
+      "deleteSelectedMessage": "Видалити {count} записів? З них {directories} — теки, які видаляються рекурсивно.",
+      "download": {
+        "action": "Зберегти на пристрій",
+        "progress": "{current}/{total}",
+        "doneTitle": "Завантаження завершено",
+        "doneMessage": "Збережено {count} файл(ів) на пристрої.",
+        "failedTitle": "Помилка завантаження",
+        "failedMessage": "Не вдалося зберегти {failed} файл(ів) ({succeeded} успішно). {error}"
+      },
+      "fits": {
+        "debugTitle": "Діагностика зображення",
+        "clipStrength": "Обрізання чорного",
+        "stretchStrength": "Коефіцієнт розтягнення",
+        "unlinked": "Незв'язане розтягнення",
+        "debayer": "Дебаєризація",
+        "pattern": "Шаблон Байєра",
+        "none": "немає",
+        "size": "Розмір",
+        "bitDepth": "Розрядність",
+        "header": "Заголовок (основні ключі)",
+        "unsupportedFile": "Цей тип файлу неможливо переглянути, натомість його буде збережено на пристрій.",
+        "previewFailed": "Не вдалося створити попередній перегляд. Скористайтеся кнопкою завантаження, щоб зберегти файл."
+      }
     },
     "sequenceCreator": {
       "title": "Конструктор послідовностей",
@@ -4913,7 +5029,8 @@
       "tonightPicks": "Вибір на сьогодні",
       "topForWindow": "Найкращі цілі для обраного вікна часу",
       "preview": "Попередній перегляд",
-      "framing": "Кадрування"
+      "framing": "Кадрування",
+      "topFmt": "Топ {n}"
     },
     "filters": {
       "title": "Фільтри",
@@ -4926,7 +5043,9 @@
       "objectType": "Тип об'єкта",
       "azSector": "Напрямок неба (азимутальний сектор)",
       "onlyAboveHorizon": "Лише >0° висоти",
-      "limit": "Ліміт"
+      "limit": "Ліміт",
+      "countFmt": "{filtered} / {total} цілей · показано: {shown}",
+      "moonIlluminatedFmt": "{pct}% освітлення"
     },
     "sort": {
       "title": "Сортування",
@@ -4975,7 +5094,10 @@
       "altitudeVsTime": "Висота / Час",
       "sampleMin": "Крок (хв)",
       "directionAz": "Напрямок (Аз)",
-      "separation": "Відстань —"
+      "separation": "Відстань —",
+      "separationFmt": "Відстань {deg}°",
+      "pointsFmt": "{n} точок",
+      "visibleHoursFmt": "{h} год видимості"
     },
     "sectors": {
       "N_NE": "Північ → Північний Схід (315°–45°)",
@@ -4992,7 +5114,9 @@
       "yes": "Так",
       "no": "Ні",
       "loading": "Завантаження…",
-      "all": "Всі"
+      "all": "Всі",
+      "unnamedTarget": "Ціль без назви",
+      "reset": "Скинути"
     },
     "tooltips": {
       "favorite": "Обране",
@@ -5017,6 +5141,13 @@
     "errors": {
       "noSequenceAvailable": "Послідовність недоступна, спочатку завантажте послідовність",
       "sequencerFailed": "Помилка секвенсера"
+    },
+    "score": {
+      "excellent": "🔥 Відмінно",
+      "veryGood": "⭐ Дуже добре",
+      "good": "👍 Добре",
+      "difficult": "⚠️ Складно",
+      "skip": "❌ Пропустити"
     }
   },
   "nav": {
@@ -5317,7 +5448,15 @@
       "risesAt": "Схід {time}",
       "setsAt": "Захід {time}",
       "circumpolar": "Навколополярний — ніколи не заходить",
-      "doesNotRise": "Не сходить цієї ночі"
+      "doesNotRise": "Не сходить цієї ночі",
+      "rate": "ШВИДКІСТЬ (RA/DEC)",
+      "maxExposure": "МАКС. ЕКСПОЗИЦІЯ",
+      "maxExposureTitle": "Що таке максимальна експозиція?",
+      "maxExposureTooltip": "Що означає максимальна експозиція?",
+      "maxExposureExplanation": "Комети рухаються відносно фонових зірок. Quick Track змушує монтування стежити за власною швидкістю комети, тому саме зірки зміщуються в межах кожного кадру замість комети -- щойно це зміщення перевищує приблизно 1 піксель, зірки починають витягуватися, що після накладання проявляється як злегка овальні зірки та менш чіткі деталі. Це число -- тривалість експозиції, за якої досягається таке зміщення на 1 піксель, на основі реальної кутової швидкості комети та масштабу вашої камери (розмір пікселя та фокусна відстань).",
+      "maxExposureCaveat": "Це лише межа стеження -- вона не враховує фон неба, світлове забруднення чи фільтр. З широкосмуговим фільтром (UV/IR-cut) у яскравішому місці засвітлення неба зазвичай обмежує реальну тривалість кадру задовго до досягнення цього числа.",
+      "rateUnavailable": "Встановіть розмір пікселя камери та фокусну відстань телескопа в цьому профілі, щоб побачити максимальну експозицію.",
+      "rateError": "Не вдалося завантажити швидкість стеження: {error}"
     },
     "track": {
       "step": "Вести його",
