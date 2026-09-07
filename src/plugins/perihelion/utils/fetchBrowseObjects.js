@@ -24,12 +24,6 @@ function mapBrowseObjects(data) {
     // Comet-only -- null for an asteroid (parameterized by Mean Anomaly at Epoch instead, no
     // direct equivalent field).
     perihelionDateUtc: o.PerihelionDateUtc ? new Date(o.PerihelionDateUtc) : null,
-    // How far "now" is from this object's own reference epoch (a comet's perihelion passage
-    // time, or an asteroid's stored orbital epoch) -- see CometOrbits/AsteroidOrbits.EpochAgeDays
-    // on the plugin side. isEpochStale past that type's own threshold means positions here rely
-    // on pure two-body propagation over an unusually long span with no perturbation modeling.
-    epochAgeDays: o.EpochAgeDays,
-    isEpochStale: o.IsEpochStale,
   }));
 }
 
@@ -48,7 +42,7 @@ function mapBrowseObjects(data) {
  * so they pop in without blocking the initial render. refreshCobs() below is the only call that
  * still returns real COBS data inline, since blocking IS the point of that explicit action.
  *
- * @returns {Promise<Array<{ id: string, name: string, objectType: 'Comet'|'Asteroid', magnitude: number|null, observedMagnitude: number|null, observedAverageMagnitude: number|null, raHours: number, decDeg: number, sunDistanceAu: number, earthDistanceAu: number, solarElongationDeg: number, constellationName: string, perihelionDateUtc: Date|null, epochAgeDays: number, isEpochStale: boolean }>>}
+ * @returns {Promise<Array<{ id: string, name: string, objectType: 'Comet'|'Asteroid', magnitude: number|null, observedMagnitude: number|null, observedAverageMagnitude: number|null, raHours: number, decDeg: number, sunDistanceAu: number, earthDistanceAu: number, solarElongationDeg: number, constellationName: string, perihelionDateUtc: Date|null }>>}
  */
 export async function fetchBrowseObjects() {
   const { PERIHELION_URL } = getUrls();
@@ -66,7 +60,7 @@ export async function fetchBrowseObjects() {
  * MPC file fetch. See CLAUDE.md/OrbitalTracking.ListBrowseObjectsAsync's own forceRefreshCobs
  * doc comment for the full reasoning.
  *
- * @returns {Promise<Array<{ id: string, name: string, objectType: 'Comet'|'Asteroid', magnitude: number|null, observedMagnitude: number|null, observedAverageMagnitude: number|null, raHours: number, decDeg: number, sunDistanceAu: number, earthDistanceAu: number, solarElongationDeg: number, constellationName: string, perihelionDateUtc: Date|null, epochAgeDays: number, isEpochStale: boolean }>>}
+ * @returns {Promise<Array<{ id: string, name: string, objectType: 'Comet'|'Asteroid', magnitude: number|null, observedMagnitude: number|null, observedAverageMagnitude: number|null, raHours: number, decDeg: number, sunDistanceAu: number, earthDistanceAu: number, solarElongationDeg: number, constellationName: string, perihelionDateUtc: Date|null }>>}
  */
 export async function refreshCobs() {
   const { PERIHELION_URL } = getUrls();
